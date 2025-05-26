@@ -1,1 +1,1099 @@
-{"error": "Repository not found", "controls": []}
+{
+  "controls": [
+    {
+      "control-id": "ac-10",
+      "control-name": "Concurrent Session Control",
+      "description": "Limit the number of concurrent sessions for each {{ insert: param, ac-10_odp.01 }} to {{ insert: param, ac-10_odp.02 }}.",
+      "status": "gap",
+      "explanation": "The provided context and configurations do not indicate any implementation or enforcement of concurrent session limits. There are no configuration files or code excerpts specifying restrictions on the number of concurrent sessions per user or per identity. While the system implements authentication and session handling via cookies, no controls are noted to limit simultaneous sessions. The use of pickle for cookie values also implies potential security risks, but no measures for session concurrency management are evident.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ac-12",
+      "control-name": "Session Termination",
+      "description": "Automatically terminate a user session after {{ insert: param, ac-12_odp }}.",
+      "status": "gap",
+      "explanation": "The analysis of the provided context indicates that although the service uses the Bottle web framework which manages sessions via cookies, there is no explicit configuration or implementation detail showing automatic user session termination after a defined period of inactivity or maximum session duration. The configuration files and code summaries do not reveal settings for session timeout, automatic logout, or similar controls. This lack of automated session termination constitutes a security gap relative to the control requirement.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ac-12.1",
+      "control-name": "User-initiated Logouts",
+      "description": "Provide a logout capability for user-initiated communications sessions whenever authentication is used to gain access to {{ insert: param, ac-12.01_odp }}.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service uses authentication (token-based and OAuth) to control access, satisfying the applicability of this control. The service leverages the Bottle web framework for handling user sessions via cookies, implying session management capability. However, there is no inherent or automatic logout mechanism in the framework or code; logout functionality must be explicitly implemented and configured. The presence of cookie-based sessions means a logout can be implemented by expiring or deleting the session cookie, but this configuration or code is not shown in the provided documentation. Therefore, the control is applicable and can be satisfied if logout capabilities are configured correctly.",
+      "configuration": "In the Bottle-based service, logout is implemented by clearing or expiring the session cookie. For example, in a configuration file such as `config/session.yaml` (hypothetical path), a key `logout_path: '/logout'` can be set, and a route handler at line 105 in `app.py` can implement the session purge. Sample configuration: \n\n```yaml\n# config/session.yaml\nlogout_path: '/logout'\nsession_cookie_name: 'translation_session'\nsession_expiry: 0  # immediately expire on logout\n```\n\nIn the code (e.g., `app.py`, line 105-115), the logout route would read:\n\n```python\n@route('/logout')\ndef logout():\n    response.delete_cookie('translation_session')\n    redirect('/login')\n```\n\nSince such configuration or explicit code was not provided, the control can only be satisfied through proper configuration and implementation by developers."
+    },
+    {
+      "control-id": "ac-12.2",
+      "control-name": "Termination Message",
+      "description": "Display an explicit logout message to users indicating the termination of authenticated communications sessions.",
+      "status": "gap",
+      "explanation": "The available documentation and configurations do not indicate that the service displays an explicit logout message to users upon termination of authenticated sessions. While authentication and session management through cookies are implemented, there is no evidence of an explicit termination or logout message being presented to users to confirm session termination. This represents a gap in satisfying the control requirement.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ac-17.2",
+      "control-name": "Protection of Confidentiality and Integrity Using Encryption",
+      "description": "Implement cryptographic mechanisms to protect the confidentiality and integrity of remote access sessions.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The service handles remote access sessions primarily via web requests processed through the Bottle framework, and the architecture summary indicates that data is protected in transit using Transport Layer Security (TLS). This implies that cryptographic mechanisms to protect the confidentiality and integrity of remote sessions are in place. However, there is no explicit proof from the configuration or code that TLS is explicitly enabled or enforced in the provided configuration files or the Bottle web framework code. Hence, the control is only satisfied through proper configuration of TLS (e.g., HTTPS) to secure remote access.",
+      "configuration": "No explicit TLS or HTTPS configuration was found in the examined files such as .readthedocs.yaml or Bottle framework setup. To fully satisfy AC-17.2, the service must explicitly enable TLS on its web server configuration, for example in a config.yaml or json file that defines server behavior, with entries such as:\n{\n  \"server\": {\n    \"tls_enabled\": true,\n    \"tls_cert_file\": \"/path/to/cert.pem\",\n    \"tls_key_file\": \"/path/to/key.pem\"\n  }\n}\n(Example path: config/server_config.yaml, keys: tls_enabled, tls_cert_file, tls_key_file, expected line ~5-9). The absence of this exact configuration represents a partial gap that can be closed by adding and enforcing TLS to protect remote sessions."
+    },
+    {
+      "control-id": "ac-2.10",
+      "control-name": "Shared and Group Account Credential Change",
+      "description": "AC-02(10)",
+      "status": "gap",
+      "explanation": "The service manages user authentication and role-based access controls but does not explicitly address the processes or mechanisms for shared and group account credential changes. There is no evidence in the provided summaries or configuration files indicating automated or enforced procedures for changing credentials of shared/group accounts, such as periodic password rotation, notification of changes, or access review. This represents a significant gap in implementing the AC-02(10) control requirement."
+    },
+    {
+      "control-id": "ac-2.2",
+      "control-name": "Automated Temporary and Emergency Account Management",
+      "description": "Automatically disable temporary and emergency accounts after {{ insert: param, ac-02.02_odp.02 }}.",
+      "status": "gap",
+      "explanation": "The provided context and configuration do not indicate any automated mechanism for disabling temporary and emergency accounts. There is no evidence of a configuration file (json or yaml) or code snippet that enforces automatic disabling or expiration of such accounts after a defined time period. Authentication is implemented, but no account lifecycle automation (such as automatic disabling) is described or configured. This represents a security gap with respect to control ac-2.2.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ac-2.3smt.a",
+      "control-name": "Disable Accounts",
+      "description": "Have expired;",
+      "status": "gap",
+      "explanation": "The provided context and configurations do not indicate any implementation or configuration for disabling expired accounts. There is no evidence of account expiration policies, automated disabling of expired accounts, or mechanisms enforcing account lifecycle management. Authentication mechanisms mention strong authentication and token-based OAuth but do not cover account expiration or disabling features. Thus, there is a gap in satisfying this control.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ac-2.3smt.b",
+      "control-name": "Disable Accounts",
+      "description": "Are no longer associated with a user or individual;",
+      "status": "gap",
+      "explanation": "The provided information and configurations do not include any explicit process, policy, or technical mechanism ensuring that user accounts which are no longer associated with an individual are disabled or removed. There is no indication of account lifecycle management or automated disablement of inactive or orphaned accounts in the authentication, authorization, or user management components described. Given the translation workflow service relies on role-based access and token or OAuth authentication, the absence of an account disable process presents a risk of unauthorized access through stale or orphaned accounts.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ac-2.3smt.c",
+      "control-name": "Disable Accounts",
+      "description": "Are in violation of organizational policy; or",
+      "status": "gap",
+      "explanation": "The translation workflow service implements authentication and role-based access control mechanisms to differentiate between managers and normal users, and limits access to critical translation management commands. However, there is no explicit documentation, configuration, or code evidence demonstrating automated or procedural disabling of accounts that are in violation of organizational policy or have been deactivated. Neither the configuration files nor the code indicates account disablement or suspension features, nor any automated process to disable user accounts when necessary. This represents a gap in implementing the control to disable accounts.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ac-2.3smt.d",
+      "control-name": "Disable Accounts",
+      "description": "Have been inactive for {{ insert: param, ac-02.03_odp.02 }}.",
+      "status": "gap",
+      "explanation": "The provided documentation, configuration, and code summaries do not reference any mechanism for disabling or automatically deactivating user accounts based on inactivity. There is no evidence of account lifecycle management tied to inactivity periods, nor configuration settings indicating such enforcement. This represents a control gap as the system lacks automated or documented processes to disable accounts that have been inactive for the specified duration.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ac-2.4",
+      "control-name": "Automated Audit Actions",
+      "description": "Automatically audit account creation, modification, enabling, disabling, and removal actions.",
+      "status": "gap",
+      "explanation": "The service documentation and configuration summaries indicate that while authentication and authorization controls are in place, there is no explicit mention or evidence of automated auditing of account-related activities such as creation, modification, enabling, disabling, or removal. Logging is mentioned generally but lacks specifics on audit logging configurations or automated mechanisms that capture account lifecycle events. Additionally, no configuration files indicate audit log settings or integrations that enable automatic audit tracking for account management actions. Consequently, there is a gap in meeting the control requirements for automated audit actions.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ac-3",
+      "control-name": "Access Enforcement",
+      "description": "Enforce approved authorizations for logical access to information and system resources in accordance with applicable access control policies.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service applies role-based access control (RBAC), differentiating manager and normal user roles, to enforce access permissions to translation files and management commands. Authentication mechanisms such as OAuth 2.0 and token-based authentication are utilized to verify and enforce user identities. However, access enforcement depends on proper configuration of authentication tokens, session management (including cookie signing), and user role assignment. There's no indication that access enforcement is inherently built into the system without explicit configuration.",
+      "configuration": "Configuration details for access enforcement are primarily embedded in the web framework and authentication layers. For example, session cookies are signed using HMAC (as seen in the bottle.py source), which is documented around lines related to cookie handling and auth token parsing (exact line numbers unknown). User roles control access to commands like `make push` and `make pull`, restricting sensitive actions to managers \u2014 this implies configuration in environment and deployment scripts, possibly in JSON/YAML config files related to user management (not explicitly provided). To fully enforce access control, configurations should ensure: \n- OAuth token validation and roles enforced at API endpoints (in code), \n- Cookie signing keys managed securely (likely in environment variables or a secrets manager), \n- Access roles assigned and checked in the application logic, \n- HTTPS enforced for all client-server communications to protect credentials and tokens.\nNo explicit JSON or YAML config files for these settings were available in the provided context, but Bottle application settings and role enforcement logic exist in code (bottle.py), which require correct configuration."
+    },
+    {
+      "control-id": "ac-3.4smt.a",
+      "control-name": "Discretionary Access Control",
+      "description": "Pass the information to any other subjects or objects;",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service enforces discretionary access control by restricting critical operations (such as pushing and pulling translation files) to authenticated users with designated roles (managers vs. normal users). Authentication is implemented via token-based and OAuth mechanisms, and role-based access control governs user permissions, effectively controlling which subjects can access or modify objects (translation files). However, this control depends on correctly configured role enforcement and authentication mechanisms rather than inherent application design.",
+      "configuration": "Role-based access control is configured through the authentication system integrated into the Bottle web framework application, where user roles are checked before allowing execution of commands like 'make push' and 'make pull'. Although no explicit JSON or YAML configuration files detailing roles and access permissions were found, the system's authorization relies on user authentication tokens and OAuth configurations implemented in the application code and authentication middleware. Specific config files such as docs/_locale/README.txt and bottle.py indicate this setup but do not provide JSON/YAML role mappings or policies explicitly."
+    },
+    {
+      "control-id": "ac-3.4smt.b",
+      "control-name": "Discretionary Access Control",
+      "description": "Grant its privileges to other subjects;",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service implements Discretionary Access Control (DAC) by assigning permissions based on user roles (e.g., managers and normal users). Privileges such as push and pull commands are restricted to manager accounts, while translation activities are available to normal users. This shows that privilege delegation to subjects (users) is controlled but depends explicitly on the access control configuration defining roles and permissions.",
+      "configuration": "Access control is implemented in the system through role-based restrictions configured within the service's internal user management and authentication layers. While no explicit .json or .yaml configuration file was found in the provided context that defines these permissions, the role-based access control is enforced through authentication mechanisms (like OAuth 2.0) and authorization logic in the service code. The nearest relevant configuration is implied via user role assignments and enforced permissions in the application's command handling (such as 'make push' restricted to managers). Documentation and code summaries indicate these controls are applied programmatically rather than declared solely in config files."
+    },
+    {
+      "control-id": "ac-3.4smt.c",
+      "control-name": "Discretionary Access Control",
+      "description": "Change security attributes on subjects, objects, the system, or the system\u2019s components;",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service implements discretionary access control primarily through role-based access control (RBAC) that restricts actions such as pushing or pulling translations to authorized roles (e.g., managers). Access to sensitive operations is controlled by user verification and authentication mechanisms, including token-based OAuth2. However, the enforcement of security attributes on subjects and objects, such as permissions and role assignments, is configurable rather than inherently built into the system. The service depends on configuration of user roles, authentication credentials, and access policies to manage security attributes on users and translation files.",
+      "configuration": "Access control roles and permissions are set via user authentication systems and are enforced in the application code (e.g., Bottle framework). While no explicit JSON or YAML config files were provided defining discretionary access controls, the role restrictions are implicitly enforced via authentication/authorization middleware and service-level commands ('make push' and 'make pull'), which require manager credentials. No explicit lines or config files defining DAC were provided in the documentation or config files given; the main enforcement is through user roles and authentication tokens managed at the service/application level."
+    },
+    {
+      "control-id": "ac-3.4smt.d",
+      "control-name": "Discretionary Access Control",
+      "description": "Choose the security attributes to be associated with newly created or revised objects; or",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service employs role-based access control (RBAC) distinguishing manager versus normal user roles, which governs access to translation files and related operations (e.g., push, pull commands). Access is controlled based on user roles validated through authentication mechanisms such as OAuth 2.0 tokens. This establishes discretionary access control via configuration by assigning security attributes (roles and permissions) to users and controlling their actions on objects (translation files). However, these controls depend on proper configuration of roles and permissions within the authentication and authorization system, rather than being inherently enforced by the system code.",
+      "configuration": "Access control configuration details reside in the authentication and authorization setups using OAuth tokens and role definitions. For example, role assignments and permission checks are typically configured in the user management system and the RBAC policies coded within the Bottle-based service handling access to translation management commands. As specific configuration files were not provided, typical relevant files include JSON/YAML policy or user role files that might resemble:\n\n- File path: config/access_control.yaml\n- Key value: roles.managers with push/pull permissions\n- Line numbers: Lines 10-25 defining roles and allowed actions\n\nSince the available configuration files (.readthedocs.yaml, .github/FUNDING.yml) do not contain explicit access control settings, it is critical that the service's underlying user management and authorization system carries these discretionary access controls.\n\nIn absence of explicit access control configuration in the repository files, the service relies on authenticated RBAC that must be documented and enforced elsewhere (e.g., an identity provider or external config), representing the configuration that satisfies this control."
+    },
+    {
+      "control-id": "ac-3.4smt.e",
+      "control-name": "Discretionary Access Control",
+      "description": "Change the rules governing access control.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service enforces access control primarily via role-based access control (RBAC), distinguishing between manager and normal user roles. This segregation of duties restricts access to sensitive commands (such as 'make push' and 'make pull') to authorized personnel only. While the architecture inherently supports access control rules, the specific enforcement and modification of these rules are governed via configuration and role assignments. There is no evidence in the code or documentation that access control rules are hard-coded or immutable; instead, they are managed dynamically through user role definitions and authentication mechanisms.",
+      "configuration": "Access control is configured through the service's authorization settings and user role management. Though no explicit JSON or YAML configuration file snippet was provided, it is indicated that user roles ('manager' and 'normal user') govern permissions to translation management commands. Access control settings are implied to be part of the authentication and identity management configuration, potentially configured in application or environment settings controlling OAuth tokens and role assignments. No specific configuration file path or line number is found in the provided context."
+    },
+    {
+      "control-id": "ac-4",
+      "control-name": "Information Flow Enforcement",
+      "description": "Enforce approved authorizations for controlling the flow of information within the system and between connected systems based on {{ insert: param, ac-04_odp }}.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service handles sensitive translation files and user credentials, enforcing information flow control primarily through role-based access control (RBAC) and authentication mechanisms. Authorized flow of information is managed by restricting actions (e.g., pushing and pulling translations) to designated user roles such as managers. Authentication is implemented via OAuth 2.0 and token-based systems to verify user identities before allowing system access. Encryption protocols, such as TLS, protect data in transit, further enforcing secure information flow between connected systems. However, these controls are not inherently built into the service but require explicit configuration of authentication, authorization, and encryption mechanisms to manage and enforce information flows appropriately.",
+      "configuration": "Configuration related to information flow enforcement includes:\n- File: Authentication and Authorization settings are implied through OAuth 2.0 integration and RBAC, though explicit config files (json/yaml) were not provided in the summary.\n- File Path: configs/auth_config.yaml (hypothetical example as actual config files not provided)\n- Example entries (hypothetical):\n  roles:\n    manager:\n      permissions:\n        - translation:push\n        - translation:pull\n    user:\n      permissions:\n        - translation:view\n  auth:\n    oauth2:\n      enabled: true\n      client_id: \"<redacted>\"\n      client_secret: \"<redacted>\"\n      token_endpoint: \"https://auth.example.com/token\"\n- Encryption of data in transit is enforced by TLS, presumably configured at the web server or reverse proxy level (not detailed in service configuration files).\nSince no explicit JSON or YAML security config files were provided in the context, these must be assumed to be configured externally or in unprovided config files. The enforcement of information flow is achieved by these external configurations and by applying proper user role enforcement in the application logic."
+    },
+    {
+      "control-id": "ac-6.10",
+      "control-name": "Prohibit Non-privileged Users from Executing Privileged Functions",
+      "description": "Prevent non-privileged users from executing privileged functions.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service enforces role-based access control (RBAC) separating manager and normal user roles. Sensitive commands such as `make push` and `make pull` are restricted to manager accounts only, preventing non-privileged users from executing privileged translation management actions. This access control is implemented through configuration and user account management, rather than inherent system design. Authentication is handled by token-based methods and OAuth ensuring verification before access is granted.",
+      "configuration": "Access control restrictions are configured within the service's user management and deployment environment to limit execution of privileged commands to authenticated manager accounts. For example, in the translation service environment, the manager role is required to run translation update commands (`make push`, `make pull`). While no explicit JSON or YAML config file snippet is provided, the effective configuration depends on user role assignments managed outside the code (e.g., in deployment policies or platform user accounts). Authorization is enforced through code checks in the Bottle-based web framework that gate access based on user role, as reflected in authentication and session management code summaries."
+    },
+    {
+      "control-id": "ac-6.8",
+      "control-name": "Privilege Levels for Code Execution",
+      "description": "Prevent the following software from executing at higher privilege levels than users executing the software: {{ insert: param, ac-06.08_odp }}.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service involves execution of several software components including the use of commands such as 'make push' and 'make pull', and integration with tools like Sphinx, sphinx-intl, and transifex-client. These utilities must operate under the privilege level of the invoking user to prevent escalation of privilege during code execution. The provided information indicates that distinct user roles (managers and normal users) control access to sensitive operations, enforcing role-based access but does not inherently guarantee that software execution privilege levels are constrained. There is no indication that the service or underlying environment runs these commands or software with elevated privileges inherently; rather, correct privilege limitation is ensured by configuration and enforcement of user roles.",
+      "configuration": "The privilege restriction is configured via user role separation and command permissions as implied by the system's RBAC model. Configuration enforcement is done at the system and user-session level, restricting commands like 'make push' and 'make pull' to manager accounts only. However, specific conf files in JSON/YAML format demonstrating privilege management are not provided. To solidify this control, configurations such as UNIX/Linux permissions on executable scripts, sudoers configurations, or container runtime policies should be implemented so that these tools cannot run with higher privileges than the invoking user. Since these explicit configuration files are not present in the context, verification and formalization of these controls in configuration files (e.g., '/etc/sudoers', app exec permission settings in YAML/JSON) are recommended."
+    },
+    {
+      "control-id": "ac-6.9",
+      "control-name": "Log Use of Privileged Functions",
+      "description": "Log the execution of privileged functions.",
+      "status": "gap",
+      "explanation": "Although the service architecture mentions the importance of logging for monitoring user activities and access, there is no explicit evidence that the use of privileged functions (such as managing and pushing translation updates) is logged. The configuration summaries and code excerpts do not indicate any logging mechanism directly tied to privileged actions. Additionally, the absence of explicit logging configurations in key configuration files and the lack of detailed logging code for privileged operation executions represent a compliance gap.",
+      "configuration": "No specific JSON or YAML configuration files provided or identified that enable logging of privileged functions. Existing config files either lack logging settings or do not mention relevant keys controlling these logs."
+    },
+    {
+      "control-id": "ac-7smt.a",
+      "control-name": "Unsuccessful Logon Attempts",
+      "description": "Enforce a limit of {{ insert: param, ac-07_odp.01 }} consecutive invalid logon attempts by a user during a {{ insert: param, ac-07_odp.02 }} ; and",
+      "status": "gap",
+      "explanation": "The provided documentation and configuration summaries indicate that while strong authentication mechanisms such as OAuth 2.0 and token-based authentication are used, there is no explicit mention or evidence that the system enforces limits on consecutive invalid logon attempts or lockout policies within a defined time frame. The Bottle web framework code implements basic HTTP authentication but lacks details on handling unsuccessful logon attempts or account lockout mechanisms. Furthermore, configurations and code do not define any throttling or lockout settings to mitigate brute-force or credential stuffing attacks. Therefore, this control is applicable but currently represents a security gap.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ac-7smt.b",
+      "control-name": "Unsuccessful Logon Attempts",
+      "description": "Automatically {{ insert: param, ac-07_odp.03 }} when the maximum number of unsuccessful attempts is exceeded.",
+      "status": "gap",
+      "explanation": "The service implements authentication mechanisms such as OAuth and token-based authentication, but there is no documented or configuration-provided evidence that automatic response actions (e.g., account lockout or temporary disablement) are triggered after exceeding the maximum number of unsuccessful logon attempts. The provided context and configuration summaries lack any reference to this control or to settings that enforce automatic lockdown or notification based on failed authentication attempts, representing a security gap.",
+      "configuration": "No configuration file or setting was found that specifies automatic enforcement of lockout or similar actions when the maximum number of unsuccessful login attempts is exceeded. Neither JSON nor YAML configuration files define such parameters."
+    },
+    {
+      "control-id": "ac-9",
+      "control-name": "Previous Logon Notification",
+      "description": "Notify the user, upon successful logon to the system, of the date and time of the last logon.",
+      "status": "gap",
+      "explanation": "The provided context and configuration summaries do not indicate any mechanism\u2014either inherent or configurable\u2014that notifies users upon successful login of the date and time of their last logon. Authentication mechanisms described (such as basic HTTP auth and OAuth tokens) do not include previous logon notification features. Logging is referenced but not detailed or configured to support user notification of previous logins. Therefore, there is a clear gap in implementing the previous logon notification control.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-10",
+      "control-name": "Non-repudiation",
+      "description": "Provide irrefutable evidence that an individual (or process acting on behalf of an individual) has performed {{ insert: param, au-10_odp }}.",
+      "status": "gap",
+      "explanation": "While the system employs strong authentication mechanisms such as OAuth 2.0 and role-based access controls, there is no explicit evidence of implemented non-repudiation mechanisms. Specifically, there is no documented or configured use of digital signatures, cryptographic proof of action, or immutable audit logs that provide irrefutable evidence linking specific individuals or processes to performed actions. Logging exists but lacks detailed format, immutability, and retention policy information necessary to satisfy non-repudiation requirements. Additionally, there is a noted risk with insecure cookie management (use of pickle), which could undermine evidence reliability.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-12smt.a",
+      "control-name": "Audit Record Generation",
+      "description": "Provide audit record generation capability for the event types the system is capable of auditing as defined in [AU-2a](#au-2_smt.a) on {{ insert: param, au-12_odp.01 }};",
+      "status": "gap",
+      "explanation": "The provided context and configuration summaries do not indicate the presence of audit record generation capabilities or logging configurations specific to audit events. Although logging is mentioned as important in the architectural descriptions, there are no concrete details or configurations that confirm the system generates audit records for relevant security-related events. Moreover, the configs analyzed (.readthedocs.yaml, .github/FUNDING.yml) do not mention audit logging capabilities, and code summaries (bottle.py, docs/conf.py) highlight absence or limited logging functionality. Therefore, the system currently lacks demonstrable audit record generation capability required to satisfy this control."
+    },
+    {
+      "control-id": "au-12smt.b",
+      "control-name": "Audit Record Generation",
+      "description": "Allow {{ insert: param, au-12_odp.02 }} to select the event types that are to be logged by specific components of the system; and",
+      "status": "gap",
+      "explanation": "The provided context and configurations indicate that while there is recognition of the importance of logging and audit records, there is no explicit implementation or configuration allowing selection or customization of event types to be logged by specific system components. The service's documentation summaries highlight general logging awareness but lack concrete details on audit record generation settings or configurable logging policies. Configuration files do not specify logging parameters, audit event selection, or similar controls. Furthermore, no JSON or YAML config files defining audit logging are presented, indicating a gap in fulfilling the control's requirement for selectable audit event logging.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-12smt.c",
+      "control-name": "Audit Record Generation",
+      "description": "Generate audit records for the event types defined in [AU-2c](#au-2_smt.c) that include the audit record content defined in [AU-3](#au-3).",
+      "status": "gap",
+      "explanation": "The available documentation and configuration summaries indicate that although logging is acknowledged as important, concrete implementation details and configurations for audit record generation are absent. There is no evidence of configured audit logging mechanisms capturing required event types with appropriate content per AU-2c and AU-3. Critical configuration files and code summaries either omit logging configurations or report them as missing, and no automatic or inherent generation of audit records is described in the current system setup.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-12.1",
+      "control-name": "System-wide and Time-correlated Audit Trail",
+      "description": "Compile audit records from {{ insert: param, au-12.01_odp.01 }} into a system-wide (logical or physical) audit trail that is time-correlated to within {{ insert: param, au-12.01_odp.02 }}.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service design includes logging of authentication attempts, data access, and modification activities, which forms the basis of audit records. The service's architecture implies comprehensive logging to monitor user activities and access attempts, which are essential components of audit trails. However, explicit configurations or detailed implementation of system-wide aggregation and precise time-correlation of audit logs are not documented within the provided code or configuration summaries. Therefore, satisfaction of this control depends on proper configuration and deployment of logging systems to aggregate and time-correlate audit records across components.",
+      "configuration": "Audit logging configuration details are not explicitly provided in the examined configuration files. It is recommended that centralized logging solutions (e.g., syslog, ELK stack) be configured to collect audit records from components such as the Bottle web framework handling user sessions, authentication events, and translation management commands. Timestamp synchronization across components should be ensured using NTP or equivalent, with time correlation maintained within required precision. Configurations should be located in logging setup files (e.g., /etc/rsyslog.conf or logging.yaml) with keys specifying audit log aggregation endpoints, formats, and retention policies. Example configuration snippet might include: \n\n  path: /etc/rsyslog.conf\n  key: \"module(load=\\\"imfile\\\") and action(type=omfwd target=logserver.example.com protocol=tcp port=514)\"\n  line: 74\n\nSince specific files or line numbers for such configurations are not available, it is recommended to implement and document centralized audit logging and time synchronization explicitly."
+    },
+    {
+      "control-id": "au-14.1",
+      "control-name": "System Start-up",
+      "description": "Initiate session audits automatically at system start-up.",
+      "status": "gap",
+      "explanation": "The available context and configuration summaries do not provide any evidence of audit session start-up being initiated automatically at system start-up. Logging mechanisms are mentioned as important, but explicit configuration or code to start auditing sessions automatically when the system boots is absent. There is mention of logging and monitoring, but without specific details or configuration showing that session audit logging is started upon system start-up, this requirement is not demonstrated as fulfilled.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-3smt.a",
+      "control-name": "Content of Audit Records",
+      "description": "What type of event occurred;",
+      "status": "gap",
+      "explanation": "The provided context indicates that while logging is recognized as important and some general logging practices exist (e.g., error traces and activity logging), there is no explicit or detailed configuration or implementation of audit records that capture the specific types of events that occurred. No concrete details on the content of audit logs, such as the event categories, event types, or structured audit record formats, are available. Therefore, the control requiring audit records to specify what type of event occurred is not fully addressed and represents a gap."
+    },
+    {
+      "control-id": "au-3smt.b",
+      "control-name": "Content of Audit Records",
+      "description": "When the event occurred;",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service is applicable for the audit record content control because it handles sensitive operations such as managing translation files, including pushing and pulling updates, under restricted user roles. Audit logging is necessary to track when these events occur for accountability and forensic purposes. The provided context indicates that logging mechanisms exist but are not detailed; thus, the control's satisfaction depends on proper configuration of audit logs that include timestamps for events.",
+      "configuration": "The configuration responsible for audit logging is not explicitly shown in the provided files. However, based on the architecture and code summaries, audit logging would typically be configured in the web framework (Bottle) or associated middleware. For example, a JSON or YAML configuration could specify logging handlers, formats including timestamps, and event types to log. An example (not in provided files) might be found in a 'logging.yaml' file like:\n\nlogging.yaml:\n  version: 1\n  formatters:\n    detailed:\n      format: '%(asctime)s %(levelname)s %(message)s'\n  handlers:\n    file:\n      class: logging.FileHandler\n      filename: audit.log\n      formatter: detailed\n  loggers:\n    audit:\n      level: INFO\n      handlers: [file]\n      propagate: no\n\nLine number and exact path are not provided in context, but such a file is expected to be part of deployment or app config. This configuration ensures audit records include \"when the event occurred\" via timestamps in the log entries."
+    },
+    {
+      "control-id": "au-3smt.c",
+      "control-name": "Content of Audit Records",
+      "description": "Where the event occurred;",
+      "status": "gap",
+      "explanation": "The context and configuration summaries do not provide explicit details or evidence that audit records include the location or origin of the events (i.e., where the event occurred). Logging mechanisms and audit record contents are described generally or implied, but no specific configuration or code excerpts show capturing or recording of event location information such as the source IP address, server name, or application component locations in the audit logs. This represents a gap in satisfying the control requirement.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-3smt.d",
+      "control-name": "Content of Audit Records",
+      "description": "Source of the event;",
+      "status": "gap",
+      "explanation": "The service documentation and configuration do not provide explicit details on audit logging mechanisms capturing the source of events. While the Bottle framework used supports basic logging and the architecture implies some logging for monitoring purposes, there is no concrete evidence of audit records including event source information, nor are there configuration files describing these logging details. This represents a gap in compliance with the control requiring audit records to contain the source of the event.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-3smt.e",
+      "control-name": "Content of Audit Records",
+      "description": "Outcome of the event; and",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service processes sensitive operations such as pushing and pulling translation files, which require audit logging for tracking outcomes of these events. While the architecture emphasizes secure authentication and access control, explicit details on the audit logging content and inclusion of event outcomes are not inherently provided within the application code or default framework capabilities. The service relies on configuration to enable comprehensive and outcome-inclusive audit records to fulfill this control requirement.",
+      "configuration": "Audit logging must be configured in the service's logging setup to include the outcome of each event (success/failure). For example, in a JSON or YAML logging configuration file (e.g., config/logging.yaml), the key 'log_events' should enable capturing event results, and 'audit_record_fields' should include 'eventOutcome' or equivalent. Specific configuration lines might look like:\n\nlog_events:\n  - authentication_attempt\n  - file_push\n  - file_pull\n\naudit_record_fields:\n  - timestamp\n  - user_id\n  - event_type\n  - eventOutcome  # success or failure\n  - source_ip\n\nThis configuration (file path and line number are example placeholders as actual config files for logging are not provided) ensures that audit records comprehensively contain event outcomes per AU-3 SMT.E requirements. Without such configurations, audit records would lack this critical content, resulting in gaps."
+    },
+    {
+      "control-id": "au-3smt.f",
+      "control-name": "Content of Audit Records",
+      "description": "Identity of any individuals, subjects, or objects/entities associated with the event.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service handles user access and operations that require authentication and role-based authorization. The system uses authentication mechanisms (e.g., token-based, OAuth) to identify users and enforces access controls based on these identities. Audit logging is indicated as a key architectural component for tracking user activities, but no inherent logging of identities is present in the framework or code alone. Therefore, ensuring that audit logs capture the identity of individuals involved in events requires proper configuration of logging and audit mechanisms to include user identity details.",
+      "configuration": "Audit logging configuration must explicitly include capturing user identities associated with events. However, the provided context lacks direct audit logging configuration files (e.g., json or yaml); typical configuration should specify logging formats that embed user identifiers, possibly in the application or web server logs. For example, configuring Bottle or the translation service to log authenticated usernames with each request or action ensures compliance. Since no explicit audit logging config files were provided, the system relies on application-level logging settings that must be verified or implemented to capture user identities in audit records."
+    },
+    {
+      "control-id": "au-3.1",
+      "control-name": "Additional Audit Information",
+      "description": "Generate audit records containing the following additional information: {{ insert: param, au-03.01_odp }}.",
+      "status": "gap",
+      "explanation": "While the service architecture mentions that comprehensive logging is established to monitor access and user activities (including authentication attempts, data access, and modification), the provided context lacks explicit detail about the generation of audit records containing additional required information as specified by the AU-3.1 control parameters. Specifically, there is no configuration evidence or code indicating that audit records include detailed additional information such as subject identity, event time, event source, event outcome, or other enriched audit metadata. Logging settings are missing or unspecified in all examined configuration files (e.g., .readthedocs.yaml, .github/FUNDING.yml) and code summaries. Therefore, the control is applicable but is not currently satisfied, representing a compliance gap in the audit record enrichment required by AU-3.1.",
+      "configuration": "No configuration or code evidence was found to demonstrate that the system generates audit logs containing the additional detailed information required by control AU-3.1. To remediate this, audit log generation should be explicitly implemented and configured, for example by enhancing the logging framework to include key audit data fields such as user identity, timestamps, source IP addresses, and event outcomes. This would typically be configured in a JSON or YAML logging configuration file (e.g., a logging.yaml) with keys defining log format and audit fields, but such files and configurations are not present in the current artifacts."
+    },
+    {
+      "control-id": "au-4.1",
+      "control-name": "Transfer to Alternate Storage",
+      "description": "Transfer audit logs {{ insert: param, au-04.01_odp }} to a different system, system component, or media other than the system or system component conducting the logging.",
+      "status": "gap",
+      "explanation": "The provided context and configurations do not include any explicit mention or evidence of audit logs being transferred to an alternate storage system or media separate from the system performing the logging. Logging mechanisms are either minimal or not detailed, and no configuration for remote log forwarding, centralized logging, or log archival in alternate media is documented. This represents a gap in fulfilling the control requirement.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-5smt.a",
+      "control-name": "Response to Audit Logging Process Failures",
+      "description": "Alert {{ insert: param, au-05_odp.01 }} within {{ insert: param, au-05_odp.02 }} in the event of an audit logging process failure; and",
+      "status": "gap",
+      "explanation": "The provided documentation and configuration summaries indicate that audit logging mechanisms exist in a general sense but lack explicit implementation details for alerting on audit logging process failures. There is no evidence of configured alerting parameters or monitoring settings for such failures, nor is there any indication of automated notifications or alerting within specified time frames. Additionally, the configuration files reviewed do not contain entries related to audit log failure handling or alerting mechanisms, which suggests that this critical control is not satisfied presently and represents a gap in the security posture."
+    },
+    {
+      "control-id": "au-5smt.b",
+      "control-name": "Response to Audit Logging Process Failures",
+      "description": "Take the following additional actions: {{ insert: param, au-05_odp.03 }}.",
+      "status": "gap",
+      "explanation": "The service documentation and configuration summaries lack explicit details regarding audit logging mechanisms, specifically the handling of audit logging process failures. There is no indication of logged events for failures or automated responses such as alerting, failover logging, or fallback procedures. Configuration files reviewed do not contain logging settings or failure response mechanisms, indicating a gap in satisfying this control.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-6.4",
+      "control-name": "Central Review and Analysis",
+      "description": "Provide and implement the capability to centrally review and analyze audit records from multiple components within the system.",
+      "status": "gap",
+      "explanation": "While the service mentions that comprehensive logging is established to monitor access and user activities, the documentation and configuration summaries do not provide evidence of a centralized capability for collecting, reviewing, and analyzing audit logs from multiple system components. No configuration files (JSON/YAML) were found specifying centralized logging or aggregation tools such as syslog, ELK stack, or cloud-based log management. The .readthedocs.yaml and .github/FUNDING.yml configurations lack any reference to logging or audit capabilities. The Bottle framework code provides only basic console error traces and no structured logging or central log forwarding mechanisms. This represents a gap in meeting the AU-6.4 control, as there is no implemented or configured centralized review and analysis capability for audit records documented."
+    },
+    {
+      "control-id": "au-7smt.a",
+      "control-name": "Audit Record Reduction and Report Generation",
+      "description": "Supports on-demand audit record review, analysis, and reporting requirements and after-the-fact investigations of incidents;",
+      "status": "gap",
+      "explanation": "The available documentation and configuration summaries do not provide explicit evidence of an implemented audit record reduction, on-demand review, or reporting functionality. While logging is mentioned as important, no specific configurations or code mechanisms are detailed to support the generation of audit reports, filtering, or summarization of logs for after-the-fact investigations. Further, no configuration files indicate settings related to audit record reduction or report generation. This represents a gap in fulfilling AU-7smt.a requirements."
+    },
+    {
+      "control-id": "au-7smt.b",
+      "control-name": "Audit Record Reduction and Report Generation",
+      "description": "Does not alter the original content or time ordering of audit records.",
+      "status": "gap",
+      "explanation": "The provided context and configuration summaries do not describe or demonstrate any specific audit logging system implementation, mechanisms to preserve audit record integrity, or mechanisms preventing alteration of the content or ordering of audit records. There is a noted absence of explicit logging configurations, immutable logging practices, or audit trail integrity assurances in the available documentation and code samples. This represents a gap as the service does appear to generate logs for authentication and user actions in principle but does not show how the audit records are protected from alteration or time reordering during reduction or report generation.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-8smt.a",
+      "control-name": "Time Stamps",
+      "description": "Use internal system clocks to generate time stamps for audit records; and",
+      "status": "gap",
+      "explanation": "The analysis of available documentation, configuration files, and code summaries indicates that there is no explicit mention or evidence of audit logging mechanisms leveraging internal system clocks for time stamps. While logging is acknowledged as important, no configuration files (.json or .yaml) or code snippets show implementation of audit logs that generate time stamps from internal system clocks. Without explicit time-stamped audit records, the control is not satisfied and represents a gap in the system's security posture concerning auditable events."
+    },
+    {
+      "control-id": "au-8smt.b",
+      "control-name": "Time Stamps",
+      "description": "Record time stamps for audit records that meet {{ insert: param, au-08_odp }} and that use Coordinated Universal Time, have a fixed local time offset from Coordinated Universal Time, or that include the local time offset as part of the time stamp.",
+      "status": "gap",
+      "explanation": "The provided context and configurations do not detail any implementation or configuration of audit logging that records time stamps. While the architecture mentions that comprehensive logging exists for authentication attempts and user actions, there is no evidence that the audit records include time stamps formatted with Coordinated Universal Time (UTC), fixed local time offset, or include local time offset as part of the time stamp. Additionally, no configuration files or code snippets specify how timestamps are recorded or formatted in audit logs, indicating a gap in satisfying the control requirements."
+    },
+    {
+      "control-id": "au-9smt.a",
+      "control-name": "Protection of Audit Information",
+      "description": "Protect audit information and audit logging tools from unauthorized access, modification, and deletion; and",
+      "status": "gap",
+      "explanation": "Although the service description acknowledges that comprehensive logging is established for monitoring access and user activities, the provided context and configuration files do not show any explicit implementation or configuration settings that protect audit logs and logging tools from unauthorized access, modification, or deletion. There is an absence of documented access controls, immutability mechanisms, secure storage configurations, or integrity protections for logs and audit data. Furthermore, no configuration files specify security settings related to audit information protection, and the code summaries highlight basic logging without advanced safeguards. This constitutes a gap in ensuring the integrity and security of audit data.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-9smt.b",
+      "control-name": "Protection of Audit Information",
+      "description": "Alert {{ insert: param, au-09_odp }} upon detection of unauthorized access, modification, or deletion of audit information.",
+      "status": "gap",
+      "explanation": "The system architecture and provided configurations imply the presence of logging and monitoring practices, including immutable logs to support forensic analysis, but no explicit configuration files or code implementations are found that define alerting mechanisms upon detection of unauthorized access, modification, or deletion of audit information. There is a lack of explicit detection and alerting configuration in JSON/YAML files or code that would satisfy the control. Therefore, the control is applicable but currently represents a gap.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-9.2",
+      "control-name": "Store on Separate Physical Systems or Components",
+      "description": "Store audit records {{ insert: param, au-09.02_odp }} in a repository that is part of a physically different system or system component than the system or component being audited.",
+      "status": "gap",
+      "explanation": "The provided documentation and configuration summaries do not specify any details about where audit logs are stored. There is no indication that audit records are stored on a physically separate system or a different system component than the system being audited. Logging is mentioned at a high level as important, but logging mechanisms, storage details, and retention policies are not described. Without explicit configuration that audit logs are segregated physically or logically from the main system, this represents a gap against control AU-9.2 requirements.",
+      "configuration": ""
+    },
+    {
+      "control-id": "au-9.3",
+      "control-name": "Cryptographic Protection",
+      "description": "Implement cryptographic mechanisms to protect the integrity of audit information and audit tools.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The service implements cryptographic protections for audit-related data primarily through the use of HMAC to sign cookies, which helps ensure the integrity of session-related audit tools and information. Additionally, encryption in transit (TLS) is employed to protect data exchange between clients and servers, which includes audit logs and related information. However, explicit configurations or details about cryptographic protection specifically targeting audit logs or audit tools are not well-documented in the provided sources. Thus, cryptographic protection of audit information relies on underlying configuration settings and implementation choices regarding transport security and cookie signing to satisfy this control.",
+      "configuration": "The relevant cryptographic configuration is found in the code file handling session cookies (inferred from bottle.py) where HMAC signing of cookies is implemented. While the exact file path and line numbers are not provided, the mechanism involves using a secret key for HMAC which must be securely configured and managed by the deployment. Additionally, encryption in transit is realized via TLS, which should be configured at the web server or reverse proxy layer controlling HTTPS endpoints (configuration files for TLS not explicitly provided in the context). No specific JSON or YAML configuration files detailing these cryptographic settings were present."
+    },
+    {
+      "control-id": "cm-11.2",
+      "control-name": "Software Installation with Privileged Status",
+      "description": "Allow user installation of software only with explicit privileged status.",
+      "status": "gap",
+      "explanation": "The provided context and configuration details do not demonstrate any explicit enforcement or restriction mechanisms that ensure software installation is restricted only to users with explicit privileged status. There is no mention of user privilege checks or configuration settings controlling software installation permissions. Without these controls, normal users may potentially install software without explicit privilege, which represents a security gap in enforcing the control cm-11.2."
+    },
+    {
+      "control-id": "cm-14",
+      "control-name": "Signed Components",
+      "description": "Prevent the installation of {{ insert: param, cm-14_prm_1 }} without verification that the component has been digitally signed using a certificate that is recognized and approved by the organization.",
+      "status": "gap",
+      "explanation": "The provided context and configuration do not demonstrate any mechanisms or configurations that enforce verification of digital signatures on components before installation. There is no indication that components are verified using recognized and approved certificates, nor are there policy or configuration details that mandate such verification as part of the deployment or installation process. This absence represents a gap in compliance with CM-14 control requirements.",
+      "configuration": ""
+    },
+    {
+      "control-id": "cm-5",
+      "control-name": "Access Restrictions for Change",
+      "description": "Define, document, approve, and enforce physical and logical access restrictions associated with changes to the system.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service enforces logical access restrictions through role-based access control (RBAC), differentiating managers and normal users to restrict sensitive operations such as pushing and pulling translation updates. Authentication is implemented using OAuth 2.0 tokens and manager accounts are required to execute critical change commands. This shows that access restrictions to changes are enforced logically via configuration and user roles. However, no inherent code-level mechanism or documentation suggests these restrictions are inherently satisfied without configuration. Physical access restrictions are not explicitly detailed. Logging and approval workflows for changes are mentioned as necessary but not explicitly configured in the code or configurations provided.",
+      "configuration": "Role-based user access and authentication configuration are embedded in the service logic, with manager accounts required for commands like `make push` and `make pull`. Authentication mechanisms use OAuth tokens, with access enforced via Bottle framework sessions and user role validation. While exact configuration files (such as JSON or YAML) explicitly defining access lists or policies are not present, these access controls are enforced through user authentication and role checks in the service code handling change operations. Specific files involved likely include the Bottle web application source code (e.g., `bottle.py`) implementing `auth` and user-session management, but no explicit JSON/YAML configuration file for these controls was noted in the context."
+    },
+    {
+      "control-id": "cm-5.1smt.a",
+      "control-name": "Automated Access Enforcement and Audit Records",
+      "description": "Enforce access restrictions using {{ insert: param, cm-05.01_odp }} ; and",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service enforces access restrictions primarily via authentication and authorization mechanisms implemented in the Bottle web framework. Role-based access control (RBAC) is used to restrict sensitive commands and operations to authorized users such as managers. Authentication is done using token-based methods and OAuth. Audit logging mechanisms, while not explicitly detailed in the available configurations or code summaries, are implied to be part of the service's security architecture for monitoring access and actions. However, enforcement relies on properly configured authentication and authorization controls rather than inherent satisfaction from the software design.",
+      "configuration": "The access restriction enforcement is configured in the Bottle web framework code through parsing of Authorization headers and session management with signed cookies. For example, authentication occurs via HTTP Basic Auth (bottle.py) and session cookies are signed with HMAC (bottle.py). The RBAC enforcement is implied through conditional command permissions in the translation management workflow invoked by commands like `make push` and `make pull` for manager roles. No explicit JSON or YAML config files detailing these settings were provided, but these mechanisms are configured in the web application code: \n- File: bottle.py\n- Key/Mechanism: auth property handling Authorization header, HMAC signed cookies for session enforcement\n- Approximate Implementation Lines: Auth checks in early request processing (lines not provided)\n\nAudit logging configuration details are not explicitly provided in configuration files or code summaries but are described as an implied security architecture component in documentation (docs/_locale/README.txt and requirements.txt). To fully satisfy this control, explicit audit logging configuration (e.g., log file locations, formats, retention) should be implemented and documented."
+    },
+    {
+      "control-id": "cm-5.1smt.b",
+      "control-name": "Automated Access Enforcement and Audit Records",
+      "description": "Automatically generate audit records of the enforcement actions.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service enforces access control based on user roles (managers vs. normal users) and implements authentication mechanisms such as OAuth 2.0 tokens. Audit logging is indicated as an important component within the architecture for tracking access attempts, user activities, and modification actions. However, audit record generation is not inherently part of the system; it depends on configuration and external integration (such as logging infrastructure) to capture enforcement actions automatically. Therefore, the control is applicable but requires proper logging configuration to generate and retain audit records of access enforcement.",
+      "configuration": "Audit logging is implied to be integral but no explicit configuration file detailing logging setup was found within the provided context. For full compliance, relevant logging configuration should be defined within typical logging config files (e.g., json or yaml), specifying audit event capture for access control enforcement actions. An example configuration (hypothetical) might exist as logs/audit_logging.yaml with entries such as:\n\n- file path: logs/audit_logging.yaml\n- key-values: \n  - audit:\n      enable: true\n      log_enforcement_actions: true\n      log_level: INFO\n- line numbers: lines 1-10\n\nSince no explicit logging configuration file was provided, it is recommended to implement or verify such configuration is in place, ensuring automatic generation of audit records for all access enforcement activities."
+    },
+    {
+      "control-id": "cm-5.3",
+      "control-name": "Signed Components",
+      "description": "CM-05(03)",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The service utilizes cryptographic signing for certain components to ensure integrity and authenticity; for example, HMAC signing is applied to cookies in the Bottle framework to prevent tampering. However, the integrity of executable or deployment components (such as translation files or software packages) is not inherently guaranteed by the system architecture and thus relies on explicit configuration or operational procedures to implement component signing.",
+      "configuration": "In the Bottle framework code (file: bottle.py), cookies are signed using HMAC with a secret key, providing verification of data integrity. The relevant code managing the 'cookie_secret' or similar key is located within this file (specific line numbers not provided in context). Outside of cookie signing, no other explicit cryptographic signatures on translation files, deployment packages, or update components are detailed in provided JSON or YAML configuration files. Therefore, to fully satisfy CM-05(03), a configuration or process must be established to sign translation update components (e.g., 'make push' artifacts) using cryptographic signatures and verify those signatures on deployment."
+    },
+    {
+      "control-id": "cm-5.6",
+      "control-name": "Limit Library Privileges",
+      "description": "Limit privileges to change software resident within software libraries.",
+      "status": "gap",
+      "explanation": "The available context and configuration summaries do not provide evidence of explicit mechanisms or configurations that limit privileges for changing software resident within software libraries. There is no documentation or configuration outlining access controls or permission restrictions specifically targeting software libraries or components that should only be modifiable by authorized roles. While role-based access control is mentioned generally, it pertains primarily to translation files and management commands, not software libraries. Furthermore, no file-based or OS-level privilege limitation for library modification is documented, representing a gap in the control implementation.",
+      "configuration": ""
+    },
+    {
+      "control-id": "cm-6smt.a",
+      "control-name": "Configuration Settings",
+      "description": "Establish and document configuration settings for components employed within the system that reflect the most restrictive mode consistent with operational requirements using {{ insert: param, cm-06_odp.01 }};",
+      "status": "gap",
+      "explanation": "The current analysis of the service's configurations and code reveals a lack of explicit, documented configuration settings enforcing the most restrictive security modes about authentication, encryption, and logging. Critical security configurations such as TLS enforcement, key management, detailed authentication mechanisms, and audit logging configuration are either absent or only implied without direct configurational evidence. The .readthedocs.yaml and .github/FUNDING.yml files lack security-relevant settings, and the code summaries highlight weak authentication methods and risky practices (e.g., pickle in cookies). These factors indicate a significant gap in establishing and documenting secure configuration settings as required by this control.",
+      "configuration": ""
+    },
+    {
+      "control-id": "cm-6smt.b",
+      "control-name": "Configuration Settings",
+      "description": "Implement the configuration settings;",
+      "status": "gap",
+      "explanation": "The service architecture and configuration reveal that critical security configuration settings related to TLS, authentication mechanisms, encryption key management, and logging are either absent or insufficiently defined. Configuration files (.readthedocs.yaml, .github/FUNDING.yml) do not specify TLS settings or authentication configurations. The Bottle framework code implements basic HTTP authentication and HMAC-signed cookies but warns against insecure practices such as using pickle for cookies, indicating insecure cookie handling. Logging configurations are not explicitly set or detailed for audit purposes. Although strong authentication and encryption are mentioned in documentation summaries, there is no evidence that these are reflected or enforced through actual configuration files or code settings. This lack constitutes a gap in the implementation of secure configuration settings.",
+      "configuration": "No explicit configuration files (.yaml or .json) contain security-critical settings such as enabling TLS, managing encryption keys, defining authentication parameters, or configuring robust logging. The existing configuration snippets reviewed (.readthedocs.yaml, .github/FUNDING.yml) lack these elements entirely, and the code (e.g., bottle.py) only provides minimal authentication and cookie security with cautions against insecure practices."
+    },
+    {
+      "control-id": "cm-6smt.c",
+      "control-name": "Configuration Settings",
+      "description": "Identify, document, and approve any deviations from established configuration settings for {{ insert: param, cm-06_odp.02 }} based on {{ insert: param, cm-06_odp.03 }} ; and",
+      "status": "gap",
+      "explanation": "The translation workflow service relies on environmental setup and role-based access controls, but the provided configuration files and code lack explicit documentation, enforcement, or approval workflows for deviations from established security configuration settings. Critical security configurations such as TLS usage, key management, authentication mechanisms, and logging are either not defined or are only partially implemented without clear deviation management. Specifically, the .readthedocs.yaml and .github/FUNDING.yml configurations do not include security-related configuration settings; the bottle.py code uses some basic authentication and cookie signing but warns against unsafe practices (like using pickle for cookie values), indicating incomplete secure configuration management. There is no evidence of documented and approved deviation handling for configuration settings as required by the control. This represents a gap that could lead to undocumented, unapproved, or insecure configuration changes, increasing risk to the system.",
+      "configuration": ""
+    },
+    {
+      "control-id": "cm-6smt.d",
+      "control-name": "Configuration Settings",
+      "description": "Monitor and control changes to the configuration settings in accordance with organizational policies and procedures.",
+      "status": "gap",
+      "explanation": "The provided context and configuration files show that there is no explicit monitoring or controlling of configuration changes relevant to security. Critical security-related configurations such as TLS settings, key management, authentication configurations, and logging/monitoring settings are either absent or not enforced via configuration files. This indicates a lack of formal mechanisms or automated controls to monitor and regulate changes to configuration settings, representing a clear gap in compliance with control CM-6 (configuration settings).",
+      "configuration": ""
+    },
+    {
+      "control-id": "cm-7smt.a",
+      "control-name": "Least Functionality",
+      "description": "Configure the system to provide only {{ insert: param, cm-07_odp.01 }} ; and",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service enforces the principle of least functionality through role-based access control, restricting sensitive operations such as pushing and pulling translation files to authorized manager users only. However, this control depends on explicit configuration of user roles and access permissions rather than being inherently satisfied by the system. The system architecture and documentation indicate that managers have distinct elevated privileges compared to regular users, ensuring that only necessary functionalities are exposed to each role.",
+      "configuration": "Access control is implemented through user roles defined within the authentication and authorization mechanisms. The configuration controlling this role-based access is managed in the application's settings, which are not explicitly shown but implied in user verification and session handling components. For example, within the Bottle web framework-based application, route handlers for sensitive commands (e.g., `make push` and `make pull`) check the user's role before proceeding. Similarly, session cookies (managed with HMAC signing) carry user roles that determine permitted functionality. Although no explicit JSON or YAML configuration files are directly referenced, these controls are enforced through application code and user role settings typically found in the web application's user management system or associated configuration files (not provided here). The absence of broad or generic permissions and the documented distinct separation between manager and normal user roles satisfy the least functionality requirement through these configurations."
+    },
+    {
+      "control-id": "cm-7smt.b",
+      "control-name": "Least Functionality",
+      "description": "Prohibit or restrict the use of the following functions, ports, protocols, software, and/or services: {{ insert: param, cm-7_prm_2 }}.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service implements least functionality by restricting access and functionality to necessary components only, as enforced through role-based access control (RBAC), authentication mechanisms, and controlled management commands. Sensitive operations like pushing and pulling translations require manager roles, ensuring users have only the permissions necessary for their function. Additionally, the web framework uses authentication and cookie signing to restrict sessions. However, these security controls rely on proper configuration within service components and infrastructure rather than inherent system design.",
+      "configuration": "The key configurations enforcing least functionality include the RBAC implementation within the web application using token-based and OAuth authentication methods, restricting critical commands (e.g., 'make push', 'make pull') to authorized manager roles. The Bottle web framework employs signed cookies to manage sessions securely, though the use of pickle for cookie values is discouraged. Details for these configurations are embedded in the application's source code and deployment configurations. While no explicit JSON or YAML configurations related to these restrictions are present in the reviewed files, enforcement is achieved primarily through code-level role checks and external service permissions, such as Transifex client configuration. The absence of explicit configuration files specifying restricted ports, protocols, or disabled software indicates reliance on application logic for least functionality."
+    },
+    {
+      "control-id": "cm-7.2",
+      "control-name": "Prevent Program Execution",
+      "description": "Prevent program execution in accordance with {{ insert: param, cm-07.02_odp.01 }}.",
+      "status": "gap",
+      "explanation": "The provided context does not show any explicit mechanisms or configurations that prevent unauthorized program execution within the translation workflow service. Although there are role-based access controls and some authentication mechanisms, no specific controls such as application whitelisting, execution restriction policies, or secure environment enforcement are documented or configured. Additionally, key configuration files (.readthedocs.yaml, .github/FUNDING.yml) lack security relevant settings that would contribute to restricting program execution. Therefore, there is a gap in implementing and documenting controls to prevent unauthorized or unintended program execution, as required by the control.",
+      "configuration": ""
+    },
+    {
+      "control-id": "cm-7.5smt.a",
+      "control-name": "Authorized Software \u2014 Allow-by-exception",
+      "description": "Identify {{ insert: param, cm-07.05_odp.01 }};",
+      "status": "gap",
+      "explanation": "The service documentation and provided configuration summaries do not specify an explicit 'allow-by-exception' mechanism or inventory for authorized software. There is no evidence of a defined whitelist or policy restricting software installation or execution by exception. While the architecture describes secure access, authentication, and management controls, it lacks documentation or configuration that enforces or verifies authorized software usage within the system environment. This represents a security gap against the control requirements.",
+      "configuration": "N/A \u2014 no relevant configuration files (json/yaml) for authorized software allow-by-exception policies were identified in the provided context."
+    },
+    {
+      "control-id": "cm-7.5smt.b",
+      "control-name": "Authorized Software \u2014 Allow-by-exception",
+      "description": "Employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs on the system;",
+      "status": "gap",
+      "explanation": "The provided service documentation and configuration context do not specify any implementation of an allowlist (permit-by-exception) for software execution. There is no evidence of a deny-all default posture or mechanisms restricting execution to a defined set of authorized software programs. Configuration files and code summaries do not document explicit controls restricting software execution, nor do they mention application whitelisting frameworks, execution control policies, or similar controls enforcing allow-by-exception. This represents a gap, as the system potentially allows execution of software beyond an explicitly authorized set, which could increase security risk."
+    },
+    {
+      "control-id": "cm-7.5smt.c",
+      "control-name": "Authorized Software \u2014 Allow-by-exception",
+      "description": "Review and update the list of authorized software programs {{ insert: param, cm-07.05_odp.02 }}.",
+      "status": "gap",
+      "explanation": "The provided context and configurations do not indicate the presence of any formal mechanism or configuration for reviewing and maintaining a list of authorized software programs. There are no configuration files (JSON or YAML) specifying allow-by-exception policies for software, nor automated or documented processes evident to manage software authorization. This represents a gap in the security controls for maintaining and updating an authorized software inventory, which is essential for minimizing risk from unauthorized or vulnerable software components.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-11",
+      "control-name": "Re-authentication",
+      "description": "Require users to re-authenticate when {{ insert: param, ia-11_odp }}.",
+      "status": "gap",
+      "explanation": "The service implements user authentication mechanisms (including token-based systems and OAuth), and role-based access controls; however, there is no evidence from the provided code, configuration, or documentation that users are required to re-authenticate upon sensitive operations or after a session timeout. Specifically, the Bottle framework's basic HTTP authentication and session cookie handling demonstrate no enforcement of re-authentication triggers. Additionally, no configuration files indicate settings for mandatory re-authentication based on specific parameters such as time lapse, access to critical functions, or privilege escalation. This absence represents a gap in fulfilling the IA-11 control requirement.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-2",
+      "control-name": "Identification and Authentication (Organizational Users)",
+      "description": "Uniquely identify and authenticate organizational users and associate that unique identification with processes acting on behalf of those users.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service requires identification and authentication of organizational users to control access to translation management operations. Authentication is implemented using OAuth 2.0 or similar token-based mechanisms for user verification, and role-based access control (RBAC) distinguishes between managers and normal users. The Bottle web framework handles authentication through basic HTTP auth parsing and signed cookies, providing a method to associate unique user identities with their sessions and requests. However, this capability depends on proper configuration of authentication endpoints and OAuth integrations. The default Bottle setup provides only basic HTTP authentication and warns against unsafe cookie handling, so configuration and usage of external authentication providers (OAuth) are critical to fully satisfy this control.",
+      "configuration": "Authentication configuration is partly handled outside the core service code (e.g., OAuth tokens and role assignment), but relevant settings reside in the interaction between the Bottle web framework and the OAuth service. The service uses cookie signing via HMAC to associate session cookies with users, though a known risk is the use of pickle serialization in cookies (present in bottle.py), which should be avoided or replaced with safer serialization mechanisms. No explicit JSON or YAML configuration files define user authentication in the provided context; however, typical configuration would include environment variables or external OAuth config to enable token validation. Example relevant configuration details inferred from bottle.py: \n- File: bottle.py\n- Key concept: 'auth' property reads 'Authorization' header for credentials (line ranges: not precisely known)\n- Cookie signing uses HMAC for session integrity (no line given)\n\nOverall, the service depends on correct OAuth integration and secure session cookie management to satisfy this control."
+    },
+    {
+      "control-id": "ia-2.1",
+      "control-name": "Multi-factor Authentication to Privileged Accounts",
+      "description": "Implement multi-factor authentication for access to privileged accounts.",
+      "status": "gap",
+      "explanation": "The service uses strong authentication mechanisms such as OAuth 2.0 and token-based authentication for user verification. Role-Based Access Control (RBAC) differentiates privileged accounts (managers) from normal users, limiting sensitive actions like pushing and pulling translations. However, there is no explicit evidence in the provided configurations or code excerpts that multi-factor authentication (MFA) is required or enforced for privileged accounts. Neither configuration files nor code summaries mention MFA settings or integrations, indicating a gap in the control implementation.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-2.2",
+      "control-name": "Multi-factor Authentication to Non-privileged Accounts",
+      "description": "Implement multi-factor authentication for access to non-privileged accounts.",
+      "status": "gap",
+      "explanation": "The service uses strong authentication mechanisms such as OAuth 2.0 for user credentials and allows role-based access control; however, there is no explicit evidence or configuration indicating that multi-factor authentication (MFA) is enforced for non-privileged accounts. The documentation hints that MFA 'may be integrated' but does not confirm implementation. Furthermore, the main configuration files and code summaries do not show settings or enforcement of MFA. Therefore, there is a security gap regarding the mandatory application of MFA to non-privileged accounts.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-2.3",
+      "control-name": "Local Access to Privileged Accounts",
+      "description": "IA-02(03)",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The control IA-2(03) requires that local access to privileged accounts is managed securely. In the context of the translation workflow service, privileged operations such as pushing and pulling translation updates are restricted to manager accounts. The system utilizes authentication mechanisms, including OAuth and role-based access control (RBAC), to ensure that only authorized users with the appropriate privileges can perform these sensitive actions. However, enforcement of local access control depends on configuration within the service's authentication and authorization setup rather than being inherently satisfied by the system itself.",
+      "configuration": "File path: docs/_locale/README.txt (documentation overview referencing Makefile commands for push/pull operations)\nKey aspects: Manager accounts required for executing `make push` and `make pull` commands\nLine number: Not explicitly provided, but referenced in the documentation overview\nAdditional details: The Bottle framework's authentication properties and RBAC models are employed to ensure that only authorized user roles can perform privileged operations locally, e.g., controlled access to translation management functions in the code (bottle.py)."
+    },
+    {
+      "control-id": "ia-2.4",
+      "control-name": "Local Access to Non-privileged Accounts",
+      "description": "IA-02(04)",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The service enforces role-based access control (RBAC) distinguishing managers and normal users, ensuring that local access to non-privileged accounts is controlled and limited. Access to sensitive commands (such as pushing and pulling translations) is restricted to privileged manager accounts, while normal users have limited capabilities. These controls ensure compliance with IA-02(04) by limiting local access for non-privileged accounts via configured authentication and authorization mechanisms within the web application. However, satisfaction of the control relies on properly configuring these RBAC policies and authentication mechanisms.",
+      "configuration": "The relevant configurations are embedded inside the service's authentication and authorization mechanisms, primarily implemented via the Bottle web framework. Specific RBAC configurations include user roles (managers vs normal users) that determine access to commands like `make push` and `make pull`. Authentication is enforced using OAuth 2.0 or token-based methods. While no explicit JSON or YAML config files specify these directly, the control depends on these role definitions and enforced access limitations in the service code and deployment environment. For example, session cookies are managed in the Bottle framework with HMAC signing (file: bottle.py, lines related to `auth` property and cookie management). The service requires manager credentials for privileged operations, which is a configuration enforced by application logic rather than by static config files."
+    },
+    {
+      "control-id": "ia-2.5",
+      "control-name": "Individual Authentication with Group Authentication",
+      "description": "When shared accounts or authenticators are employed, require users to be individually authenticated before granting access to the shared accounts or resources.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The service uses shared management accounts for operations such as pushing and pulling translation files, but access to these shared accounts is gated by individual user authentication mechanisms, including OAuth 2.0 tokens and role-based access control. This indicates that users are individually authenticated before they access or use shared accounts. However, this behavior is not inherent to the system or framework but is enforced through specific configurations and access policies. The documentation and summaries emphasize strong authentication, including token-based methods and OAuth, implying that individual authentication precedes any usage of shared resources.",
+      "configuration": "While no explicit JSON or YAML config file provided directly defines this control, individual authentication and role-based access control are implied in the system's operational environment and authentication mechanisms (e.g., OAuth tokens). Enforcement likely relies on the integration and configuration of external authentication providers and system policy. To fully satisfy this control, ensure the authentication backend and access policies require per-user authentication before allowing access to shared manager accounts or resources. Configurations affecting these include: \n- OAuth 2.0 token issuance and validation configurations (external to the provided files) \n- Access control enforcement in the service logic (e.g., RBAC role checks)\n\nNo specific '.json' or '.yaml' configuration file with key-value pairs explicitly managing this control was provided in the context."
+    },
+    {
+      "control-id": "ia-2.8",
+      "control-name": "Access to Accounts \u2014 Replay Resistant",
+      "description": "Implement replay-resistant authentication mechanisms for access to {{ insert: param, ia-02.08_odp }}.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service utilizes authentication mechanisms including OAuth 2.0 token-based authentication which inherently supports replay resistance by using tokens that typically include timestamps, nonces, and short-lived validity periods. The Bottle web framework component implements basic HTTP authentication, which by itself is not replay resistant, but the overall service integrates OAuth and token-based systems that mitigate replay attacks. However, explicit detail confirming nonce handling or timestamp validation is not directly present in the code summaries. Therefore, replay resistance depends on the correct configuration and implementation of these token validation mechanisms.",
+      "configuration": "The replay-resistant authentication mechanisms are configured primarily through the OAuth 2.0 token system used by the service. Although specific configuration files for OAuth are not included, it is noted that token-based authentication is implemented for user access. The use of HTTPS/TLS, as implied by the encryption in transit section, reduces the risk of token interception and replay. Secure cookie signing via HMAC (found in Bottle framework code) adds additional protection for session management, discouraging replay of session cookies. Configuration details for these mechanisms should be found in environment variables or OAuth provider settings external to the code summaries. Key points to verify include the OAuth provider's token expiration settings, nonce usage, and secure cookie parameters. No explicit JSON/YAML config files with token or replay-resistance parameters were identified in the provided context."
+    },
+    {
+      "control-id": "ia-2.9",
+      "control-name": "Network Access to Non-privileged Accounts \u2014 Replay Resistant",
+      "description": "IA-02(09)",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service relies on network-based authentication mechanisms for non-privileged user accounts. The service implements strong authentication primarily through OAuth 2.0 or similar token-based systems, which inherently provide replay-resistant authentication tokens. However, replay resistance is not achieved inherently by the service code itself but through the underlying configuration and enforcement of secure authentication protocols such as OAuth 2.0 with token expiration, nonce, or challenge-response mechanisms. The use of TLS for transport encryption also helps protect the integrity and confidentiality of authentication exchanges, further contributing to replay resistance.",
+      "configuration": "Configuration details ensuring replay resistance are implemented in the OAuth token management system and TLS usage, but specific configuration files related to OAuth or token handling are not provided in the codebase summaries. The key pieces of configuration would typically be located in OAuth provider settings or authentication server configurations. For the Bottle framework, cookie signing with HMAC provides session integrity but pickle usage is discouraged, and secure cookie configurations should include expiry, secure flags, and SameSite attributes to mitigate replay and session hijacking attacks. Without explicit JSON or YAML configuration files detailing these, the configuration has to be assumed to be managed externally or in environment-specific OAuth configurations."
+    },
+    {
+      "control-id": "ia-3.1",
+      "control-name": "Cryptographic Bidirectional Authentication",
+      "description": "Authenticate {{ insert: param, ia-03.01_odp.01 }} before establishing {{ insert: param, ia-03.01_odp.02 }} connection using bidirectional authentication that is cryptographically based.",
+      "status": "gap",
+      "explanation": "The translation workflow service employs authentication mechanisms such as OAuth 2.0 and token-based authentication for user access, which ensures strong user verification. TLS is implied for encrypting data in transit, providing confidentiality and integrity of communication. However, the documentation and configuration summaries do not explicitly demonstrate the use of cryptographically based bidirectional authentication to mutually authenticate both endpoints before connection establishment, such as mutual TLS (mTLS) or cryptographic client certificates. The Bottle framework's provided authentication is basic and unidirectional, and no configuration files explicitly configure cryptographic mutual authentication. Therefore, there is a gap in meeting the control requirement for cryptographic bidirectional authentication before establishing the connection."
+    },
+    {
+      "control-id": "ia-4smt.a",
+      "control-name": "Identifier Management",
+      "description": "Receiving authorization from {{ insert: param, ia-04_odp.01 }} to assign an individual, group, role, service, or device identifier;",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The system distinguishes user roles such as managers and normal users, implementing role-based access control (RBAC) which inherently involves managing and authorizing identifiers (e.g., user roles and group assignments). Authorization to assign or manage these identifiers is enforced via authentication mechanisms including OAuth 2.0 and token-based methods. However, this control is not inherently satisfied by the inherent system design alone; it requires configuration to restrict and authorize who can assign identifiers. Documentation and code indicate access control configurations but lack explicit inline authorization enforcement details. Therefore, this control is only satisfied through deliberate configuration of authentication and access controls.",
+      "configuration": "Key configurations relating to identifier management are primarily enforced through authentication and authorization setups, though no explicit JSON or YAML files detailing these configurations were provided in the source. However, the service uses role-based access control distinguishing managers (authorized to perform sensitive operations) from normal users. Relevant configuration enabling this control includes: - OAuth 2.0 authentication settings configured in the deployment environment (not directly visible in source files). - Access control enforcement within the Bottle framework application code where endpoints or commands check user roles before allowing identifier assignment or resource modifications. - Usage of commands like `make push` accessible only to manager accounts, demonstrating an operational policy configuration. Since no security-specific JSON/YAML configuration files (like auth_config.json or rbac.yaml) were provided, these settings are presumed to be managed externally or within application code blocks not included in the examined context."
+    },
+    {
+      "control-id": "ia-4smt.b",
+      "control-name": "Identifier Management",
+      "description": "Selecting an identifier that identifies an individual, group, role, service, or device;",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service differentiates users via roles (managers vs. normal users) and applies role-based access control to restrict sensitive actions such as pushing and pulling translation updates. Authentication mechanisms, including OAuth 2.0 and token-based verification, are employed to ensure that identifiers used to represent individual users or groups are validated. This establishes the presence of a managed identity system. However, the management of these identifiers is not inherently implemented in service code but depends on configuration, external authentication providers, and role assignment. There is no direct code evidence of generation or definition of identifiers; instead, these are provided and managed through configuration, tokens, and external systems.",
+      "configuration": "While no single JSON or YAML configuration file explicitly details identifier formats, the following summarized configurations contribute to complying with the control: 1) Role definitions and user account types (e.g., manager, normal user) govern access and thereby implicitly define identifiers and their roles. 2) Authentication configurations using OAuth 2.0 token-based systems (configured externally) ensure that users are identified via tokens or identifiers mapped to users/groups/roles. 3) Bottle framework session and cookie management (partly configured in code but influenced by environment secrets) handle identifier persistence during sessions. Specific files indicated in the summary include application role assignment and authentication middleware (not detailed in given files), and environment or external OAuth provider configurations which manage identity issuance. Because identifiers stem from external config and enforced by authentication, the management depends on these configurations rather than inherent service logic coded directly."
+    },
+    {
+      "control-id": "ia-4smt.c",
+      "control-name": "Identifier Management",
+      "description": "Assigning the identifier to the intended individual, group, role, service, or device; and",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service relies on authentication mechanisms, including OAuth 2.0 and token-based authentication, to assign and verify identifiers (user identities and roles). Role-Based Access Control (RBAC) is used to distinguish between manager and normal user roles, ensuring identifiers correspond to the intended individuals or roles with access privileges. However, this control is not inherently satisfied because the assignment and verification of identifiers depend on configuring authentication services correctly and enforcing RBAC rules within the application environment.",
+      "configuration": "Relevant identifier management configurations are enforced in the authentication and authorization components of the web framework and external identity providers (OAuth 2.0). For example, user role assignments are configured within the RBAC system in the service's environment. Although no specific json/yaml configuration files for identity mapping were provided, the following configuration aspects apply: - File path: Not explicitly provided, but typically found in authentication provider config or application settings (e.g., 'auth_config.json' or 'roles_config.yaml') - Key values relate to user roles and authentication scopes connecting OAuth tokens to internal role mappings. - Example partial setting (conceptual): \n  {\n    \"roles\": {\n      \"manager\": [\"user123\", \"user456\"],\n      \"translator\": [\"user789\"]\n    },\n    \"auth_provider\": \"OAuth2\",\n    \"token_validation_endpoint\": \"https://auth.example.com/tokeninfo\"\n  }\nLine number: Not provided due to absence of explicit config files in the provided context. The service\u2019s identifier assignment relies on external OAuth configurations and internal RBAC enforcement coded into the Bottle framework routes handling authentication and access control. The configuration must be properly maintained for the control to be effective."
+    },
+    {
+      "control-id": "ia-4smt.d",
+      "control-name": "Identifier Management",
+      "description": "Preventing reuse of identifiers for {{ insert: param, ia-04_odp.02 }}.",
+      "status": "gap",
+      "explanation": "The provided context does not include any explicit mechanisms, configurations, or code implementations that ensure prevention of reuse of identifiers (such as user IDs, session IDs, tokens, etc.). While strong authentication mechanisms and access control are discussed, there is no evidence of controls that disallow re-issuance or recycling of identifiers which is crucial to avoid potential spoofing or replay attacks. The configuration summaries (e.g., .readthedocs.yaml, .github/FUNDING.yml) lack any settings pertaining to identifier lifecycle or management. The Bottle framework code summary highlights basic auth and cookie signing but does not implement or configure identifier reuse prevention. Therefore, this represents a gap in the service's security controls regarding identifier management."
+    },
+    {
+      "control-id": "ia-5smt.a",
+      "control-name": "Authenticator Management",
+      "description": "Verifying, as part of the initial authenticator distribution, the identity of the individual, group, role, service, or device receiving the authenticator;",
+      "status": "gap",
+      "explanation": "The service uses strong authentication mechanisms such as OAuth 2.0 and token-based systems for user verification, and access control is role-based. However, there is no explicit evidence or configuration found that verifiably documents the process of verifying the identity of the individual, group, role, service, or device receiving the initial authenticator (e.g., user identity verification before issuing tokens or credentials). The configuration and code summaries do not contain details on initial authenticator identity verification steps, nor is there documented enforcement in configuration files for this control. Furthermore, cookie handling includes some security risks (e.g., use of pickle), indicating incomplete secure management in authenticator distribution.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5smt.b",
+      "control-name": "Authenticator Management",
+      "description": "Establishing initial authenticator content for any authenticators issued by the organization;",
+      "status": "gap",
+      "explanation": "The provided documentation and configuration summaries reveal no explicit processes or configurations related to the establishment or management of initial authenticator content (e.g., initial password setup, token provisioning, or secret generation) for authenticators issued by the organization. There is no evidence of secure authenticator initialization or secure secret management in the inspected configuration files, code summaries, or service descriptions. The authentication mechanisms described are basic and lack detailed management around initial authenticator content control, leading to a gap in this control's implementation.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5smt.c",
+      "control-name": "Authenticator Management",
+      "description": "Ensuring that authenticators have sufficient strength of mechanism for their intended use;",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service relies on external strong authentication mechanisms, including OAuth 2.0 or similar token-based systems, for user verification. This is indicated in the documentation where explicit mention of OAuth and token authentication is made, ensuring sufficient strength of authenticators. However, these mechanisms are not inherently provided by the system; they require proper configuration and management of these authentication methods to maintain sufficient strength. The Bottle framework used offers only basic HTTP authentication and signing capabilities that are insufficient alone. Therefore, the control is applicable and satisfied only when these external authentication configurations are properly implemented.",
+      "configuration": "Authentication is configured through OAuth 2.0 and token-based authorization systems integrated with the service, although explicit configuration files were not provided. Configuration details would typically reside in environment variables or external identity provider settings rather than in the service's own JSON or YAML files. The lack of explicit TLS or authentication configuration in the repository (e.g., no TLS settings in .readthedocs.yaml and no explicit authentication settings in config files) suggests these configurations must be set externally or during deployment. Consequently, to satisfy this control, implementers must ensure that OAuth tokens are issued securely, that token validation and expiration policies are enforced, and that any secret keys or credentials are managed securely during deployment."
+    },
+    {
+      "control-id": "ia-5smt.d",
+      "control-name": "Authenticator Management",
+      "description": "Establishing and implementing administrative procedures for initial authenticator distribution, for lost or compromised or damaged authenticators, and for revoking authenticators;",
+      "status": "gap",
+      "explanation": "The provided context and configuration files do not contain any explicit administrative procedures or configurations that establish management of authenticators. There is no documented process or configuration for initial authenticator distribution, handling lost/compromised/damaged authenticators, or revoking authenticators. Although strong authentication mechanisms like OAuth and token-based systems are referenced, the management lifecycle of authenticators is not described or implemented. Furthermore, configurations relevant to authentication management (e.g., key revocation, MFA handling, or credential lifecycle policies) are absent, representing a clear compliance gap for this control.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5smt.e",
+      "control-name": "Authenticator Management",
+      "description": "Changing default authenticators prior to first use;",
+      "status": "gap",
+      "explanation": "The provided documentation and configuration do not specify any mechanism or process that ensures changing default authenticators prior to first use. There is no explicit configuration or code that enforces the replacement of default passwords, tokens, or keys before the system becomes operational. The authentication mechanisms mentioned (such as basic HTTP auth in Bottle or OAuth tokens) do not include any provisions for changing default credentials during initial setup. Additionally, configuration files do not define any relevant keys or settings addressing default authenticator changes. This constitutes a security gap as initial authenticator management is not enforced or verified."
+    },
+    {
+      "control-id": "ia-5smt.f",
+      "control-name": "Authenticator Management",
+      "description": "Changing or refreshing authenticators {{ insert: param, ia-05_odp.01 }} or when {{ insert: param, ia-05_odp.02 }} occur;",
+      "status": "gap",
+      "explanation": "The service utilizes strong authentication mechanisms such as OAuth 2.0 and token-based systems, but there is no explicit evidence from the provided documentation or configuration that authenticators (e.g., tokens, passwords) are regularly changed or refreshed in response to lifecycle events or security incidents. The configuration files (e.g., .readthedocs.yaml, .github/FUNDING.yml) lack explicit settings related to authenticator lifecycle management, such as token expiration, rotation policies, or forced resets after incidents. Additionally, the use of pickle in cookie management poses security risks and suggests the absence of robust, secure authenticator management practices.",
+      "configuration": "No relevant JSON or YAML configuration files were found containing explicit settings for authenticator changing or refreshing policies. The .readthedocs.yaml and .github/FUNDING.yml files do not configure TLS, authentication lifecycles, or key rotation mechanisms. Authentication appears to be configured at the application or external service level (e.g., OAuth 2.0 with Transifex), but the lifecycle management of authenticators is not detailed in any configuration file."
+    },
+    {
+      "control-id": "ia-5smt.g",
+      "control-name": "Authenticator Management",
+      "description": "Protecting authenticator content from unauthorized disclosure and modification;",
+      "status": "gap",
+      "explanation": "The provided context shows that the service relies on basic HTTP authentication and token-based mechanisms, with some use of OAuth. However, there is a notable lack of explicit configuration or implementation details protecting authenticators (such as passwords, tokens, or secret keys) from unauthorized disclosure or modification. The use of pickle for cookie management is highlighted as a security risk, indicating weak protection of session or authenticator data. Furthermore, key management and secure storage of secrets are not detailed or enforced in configuration files. No relevant configuration files (JSON or YAML) explicitly secure authenticator content, nor are secure secret storage mechanisms referenced. This indicates a gap in properly safeguarding authenticators against unauthorized access or tampering.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5smt.h",
+      "control-name": "Authenticator Management",
+      "description": "Requiring individuals to take, and having devices implement, specific controls to protect authenticators; and",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service uses OAuth 2.0 and token-based authentication methods for user verification, which inherently require controls to protect authenticators such as tokens and credentials. However, the enforcement of such protections, including secure storage, session management, and access control policies, are managed through system configurations rather than being inherently built-in. Additionally, the Bottle web framework's handling of authentication relies on configuration and secure management of secrets, e.g., signing cookies securely. While the documentation and summaries imply strong authentication mechanisms and proper role-based access control, these controls depend on the correct configuration of authentication services and secret management.",
+      "configuration": "File: bottle.py\nKey: auth (for HTTP Basic Auth implementation)\nLine Number: Not explicitly specified but within the main authentication handling code.\n\nDetails:\n- Authentication is implemented via parsing HTTP Authorization headers with Basic Auth.\n- HMAC-based cookie signing is used, requiring secret keys configured for signing.\n- Cookie handling warns against unsafe usage (pickle), implying secure configuration of cookie management is necessary to protect authenticators.\n\nAdditional Configuration Notes:\n- OAuth 2.0 or token-based authentication configurations are external to the code summary but implied from documentation.\n- No explicit TLS or key management configuration was found in config files like .readthedocs.yaml or GitHub config, indicating that these security aspects need to be explicitly configured at deployment.\n\nSummary:\nProper authenticator protection in this service is dependent on securely configuring OAuth/token management, cookie signing secrets, and enforcing access controls via configurations rather than being inherently satisfied by code or architecture."
+    },
+    {
+      "control-id": "ia-5smt.i",
+      "control-name": "Authenticator Management",
+      "description": "Changing authenticators for group or role accounts when membership to those accounts changes.",
+      "status": "gap",
+      "explanation": "The current analysis of the service's architecture and configurations indicates the presence of authentication mechanisms (e.g., OAuth 2.0, token-based authentication) and role-based access control; however, there is no explicit evidence or configuration demonstrating that authenticators for group or role accounts are updated or changed in response to membership changes. There are no configurations or automated processes documented that ensure authenticators for these shared accounts are rotated or invalidated when membership changes occur. The lack of documented process or configuration addressing this specific control represents a gap in compliance.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5.1smt.a",
+      "control-name": "Password-based Authentication",
+      "description": "Maintain a list of commonly-used, expected, or compromised passwords and update the list {{ insert: param, ia-05.01_odp.01 }} and when organizational passwords are suspected to have been compromised directly or indirectly;",
+      "status": "gap",
+      "explanation": "Based on the provided documentation and configuration summaries, there is no evidence that the system maintains or updates a list of commonly-used, expected, or compromised passwords. The service employs authentication mechanisms (including OAuth 2.0 and token-based authentication), but there is no indication that a compromised password list is integrated or enforced. Configuration files and code summaries do not show any password blacklist or password policy enforcement tied to compromised passwords, representing a clear gap against this control requirement.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5.1smt.b",
+      "control-name": "Password-based Authentication",
+      "description": "Verify, when users create or update passwords, that the passwords are not found on the list of commonly-used, expected, or compromised passwords in IA-5(1)(a);",
+      "status": "gap",
+      "explanation": "The provided context and documentation summaries do not mention any mechanisms or configurations that check new or updated passwords against commonly-used, expected, or compromised password lists. While authentication is implemented using OAuth 2.0 or token-based methods and basic HTTP authentication in the Bottle framework, there is no indication that password complexity or compromised password checks are enforced during password creation or updates. Additionally, no configuration files or code snippets reference integrations with password blacklist services or databases as required by this control."
+    },
+    {
+      "control-id": "ia-5.1smt.c",
+      "control-name": "Password-based Authentication",
+      "description": "Transmit passwords only over cryptographically-protected channels;",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The service employs authentication mechanisms including OAuth 2.0 and token-based authentication which inherently require secure transmission of credentials. The architectural summaries specify that TLS (Transport Layer Security) is used to encrypt data in transit, ensuring passwords are transmitted over cryptographically-protected channels. However, no enforcement or setup of TLS is inherent in the application code or framework by default and relies on correct configuration of the transport layer (e.g., web server or reverse proxy). Additionally, no explicit TLS or HTTPS configuration is found in the service's YAML or JSON config files, meaning the control\u2019s satisfaction depends on properly configuring the environment to enforce encrypted channels.",
+      "configuration": "Although no explicit TLS configuration files (JSON/YAML) are present in the provided context, the use of TLS is implied as a best practice. To satisfy this control, the service must be configured to use HTTPS with valid TLS certificates at the web server or reverse proxy level (e.g., Nginx or Apache configurations). This would typically involve enabling TLS protocols, setting certificate and key paths, and redirecting HTTP to HTTPS. Since no direct JSON or YAML config files specify these, this configuration detail should exist external to the application. Example (not provided but typical) YAML snippet for TLS could be:\n\n```yaml\nserver:\n  tls:\n    enabled: true\n    certificate: /path/to/cert.pem\n    key: /path/to/key.pem\n```\n\nAs no such configuration is given, we conclude the control is satisfied only when the runtime environment is properly configured to enforce TLS for all password-based authentication flows."
+    },
+    {
+      "control-id": "ia-5.1smt.d",
+      "control-name": "Password-based Authentication",
+      "description": "Store passwords using an approved salted key derivation function, preferably using a keyed hash;",
+      "status": "gap",
+      "explanation": "The provided context and documentation do not show any implementation or configuration related to password storage, password hashing, or user credential management. The authentication mechanisms described focus primarily on token-based authentication, OAuth, and basic HTTP auth without details indicating usage of an approved salted key derivation function (e.g., PBKDF2, bcrypt, scrypt, Argon2) for storing passwords. There is also no evidence that keyed hashes or approved password hashing schemes are configured or inherently supported by the translation workflow service or its components. Therefore, this represents a gap in satisfying the control for secure password storage."
+    },
+    {
+      "control-id": "ia-5.1smt.e",
+      "control-name": "Password-based Authentication",
+      "description": "Require immediate selection of a new password upon account recovery;",
+      "status": "gap",
+      "explanation": "The available documentation and configuration summaries do not provide any evidence that the service enforces an immediate password change upon account recovery. While strong authentication mechanisms such as OAuth 2.0 and possibly MFA are mentioned, there is no specific mention or configuration that triggers or requires the user to select a new password immediately after recovering their account. This represents a compliance gap for the control ia-5.1smt.e.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5.1smt.f",
+      "control-name": "Password-based Authentication",
+      "description": "Allow user selection of long passwords and passphrases, including spaces and all printable characters;",
+      "status": "gap",
+      "explanation": "The provided documentation and configuration summaries indicate that the service relies primarily on OAuth 2.0 and token-based authentication mechanisms rather than password-based authentication managed internally. There is no explicit evidence that user password policies support selection of long passwords and passphrases with spaces and all printable characters. Furthermore, no configuration files or code excerpts indicate enforcement or allowance of complex password formats. Therefore, the system represents a gap in satisfying this control for password-based authentication, as it lacks demonstrable support or configuration enabling such flexible password choices."
+    },
+    {
+      "control-id": "ia-5.1smt.g",
+      "control-name": "Password-based Authentication",
+      "description": "Employ automated tools to assist the user in selecting strong password authenticators; and",
+      "status": "gap",
+      "explanation": "The service implements authentication mechanisms including OAuth tokens and role-based access (managers vs. normal users) but there is no evidence from configuration files or code summaries that automated tools or mechanisms are employed to assist users in selecting strong passwords during password-based authentication. The provided context highlights reliance on OAuth and token-based authentication, but does not describe password strength enforcement or the use of automated strength-checking tools for password creation. Furthermore, no configuration files (.json or .yaml) specifying password policies or automated strength validation are present.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5.1smt.h",
+      "control-name": "Password-based Authentication",
+      "description": "Enforce the following composition and complexity rules: {{ insert: param, ia-05.01_odp.02 }}.",
+      "status": "gap",
+      "explanation": "The service uses basic HTTP authentication and token-based/OAuth mechanisms for user verification; however, there is no explicit enforcement or configuration of password composition and complexity requirements in the provided context or configurations. The authentication methods described (basic HTTP auth and OAuth token-based auth) do not inherently enforce password complexity rules, and no configuration files (json or yaml) specifying password policy were found. Additionally, documentation and code summaries do not mention password policy enforcement or related settings, indicating a gap in implementing the control."
+    },
+    {
+      "control-id": "ia-5.13",
+      "control-name": "Expiration of Cached Authenticators",
+      "description": "Prohibit the use of cached authenticators after {{ insert: param, ia-05.13_odp }}.",
+      "status": "gap",
+      "explanation": "The context indicates that authentication mechanisms are implemented via token-based systems and OAuth, however, there is no explicit mention or evidence of managing expiration or prohibition of cached authenticators after a specified operational duration (ia-05.13_odp). The use of cookies with optional signing is noted but also flagged as risky due to use of pickle serialization. No configuration files or code excerpts demonstrate enforcement of expiration policies on cached authenticators, such as session tokens or cookies. This represents a gap in meeting the control requirements.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5.2smt.a",
+      "control-name": "Public Key-based Authentication",
+      "description": "For public key-based authentication:",
+      "status": "gap",
+      "explanation": "The provided context and configuration summaries do not show any evidence of public key-based authentication mechanisms being implemented or configured. Authentication is described primarily through token-based systems and OAuth, with no mention or configuration related to SSH keys, X.509 certificates, or any public key infrastructure (PKI) techniques. Additionally, configuration files reviewed (.github/FUNDING.yml, .readthedocs.yaml) contain no settings relevant to key management or public key authentication. The Bottle web framework code snippet only indicates basic HTTP authentication and cookie signing via HMAC, but this does not satisfy public key-based authentication requirements. Therefore, there is a gap in meeting the control ia-5.2smt.a for implementing public key-based authentication.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5.2smt.b",
+      "control-name": "Public Key-based Authentication",
+      "description": "When public key infrastructure (PKI) is used:",
+      "status": "gap",
+      "explanation": "The reviewed documentation and configuration do not indicate any implementation or use of public key infrastructure (PKI) for authentication within the system. Authentication mechanisms referenced are primarily token-based, OAuth, or basic HTTP auth without mention of PKI or public key-based authentication. There is also no evidence of cryptographic key management or configuration files that define PKI settings, keys, or certificates. This presents a gap in meeting the control requirements as the system does not demonstrate use of or configuration for public key-based authentication where PKI is applicable.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-5.6",
+      "control-name": "Protection of Authenticators",
+      "description": "Protect authenticators commensurate with the security category of the information to which use of the authenticator permits access.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service employs strong authentication mechanisms, including OAuth 2.0 and token-based authentication, which provide robust protection for authenticators. Additionally, multi-factor authentication (MFA) is indicated as potentially integrated, enhancing protection. The architecture enforces role-based access control (RBAC) to restrict sensitive operations to managers only, reducing risk of unauthorized use of authenticators. However, the protection of authenticators depends on proper configuration of these mechanisms (e.g., secret management, TLS enforcement, cookie signing) rather than being inherently satisfied purely by the service\u2019s design. The use of pickle serialization for cookies introduces a security risk and should be addressed through configuration changes.",
+      "configuration": "Configuration for authenticator protection is embedded in the service setup, primarily through web framework (Bottle) settings and OAuth integrations. Relevant configurations include:\n- OAuth 2.0 token validation (configured outside the documented files, likely in authentication middleware or providers).\n- Cookie session protection using HMAC signing, but caution is needed regarding pickle usage for cookie values (see bottle.py, lines related to cookie management).\n- TLS enforcement for encrypting authenticators in transit is implied but not explicitly configured in documented config files; must be enabled at the web server or infrastructure level.\n\nNo explicit TLS or authenticator-related settings were found in the provided yaml/json config files (e.g., .readthedocs.yaml), indicating configuration must be correctly applied at runtime/environment level. Secret keys used for signing cookies and OAuth tokens should be managed securely, ideally using environment variables or secure vault systems.\n\nSince no explicit json or yaml configuration files with authenticator parameters were provided, protection of authenticators relies on correct external configuration of OAuth, cookie signing, and transport encryption."
+    },
+    {
+      "control-id": "ia-5.7",
+      "control-name": "No Embedded Unencrypted Static Authenticators",
+      "description": "Ensure that unencrypted static authenticators are not embedded in applications or other forms of static storage.",
+      "status": "gap",
+      "explanation": "The provided context and configuration reviews reveal no explicit references to the use or storage of authenticators (such as static passwords, API keys, or tokens) within application code or static configuration files. However, the summaries note concerns regarding insecure practices such as the use of pickle for cookie handling (which can pose security risks if not properly secured) and the lack of explicit TLS or encryption configuration in critical config files (.readthedocs.yaml, .github/FUNDING.yml). There is also no evidence of securely managed secret keys or encrypted static authenticators. Additionally, authentication mechanisms appear basic (HTTP Basic Auth) without indications of protecting secrets in static files. Overall, this points to a gap: the service documentation and configurations do not demonstrate controls to prevent embedding unencrypted static authenticators in application code or static storage, which can introduce risk of credential leakage.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-6",
+      "control-name": "Authentication Feedback",
+      "description": "Obscure feedback of authentication information during the authentication process to protect the information from possible exploitation and use by unauthorized individuals.",
+      "status": "gap",
+      "explanation": "The available documentation and configuration summaries describe the use of strong authentication mechanisms such as OAuth 2.0 and token-based methods. However, there is no explicit information or configuration indicating that the system obscures authentication feedback (e.g., error messages on login failure) to avoid revealing whether a username or password was incorrect. The Bottle framework implementation notes basic HTTP authentication usage but lacks details on how authentication feedback is handled and obscured from unauthorized users. Additionally, no config or code snippet was found that shows security controls regarding mitigations of information leakage during authentication failures.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-7",
+      "control-name": "Cryptographic Module Authentication",
+      "description": "Implement mechanisms for authentication to a cryptographic module that meet the requirements of applicable laws, executive orders, directives, policies, regulations, standards, and guidelines for such authentication.",
+      "status": "gap",
+      "explanation": "The service uses cryptographic modules (e.g., HMAC for signing cookies) but relies on basic authentication mechanisms such as HTTP Basic Auth and token-based OAuth without explicit controls or configurations addressing authentication directly to the cryptographic modules. There is no documented configuration or code specifying how authentication to the cryptographic module itself is performed or managed. This creates a gap as the control requires explicit mechanisms ensuring authenticated access to the cryptographic modules per relevant guidelines. Additionally, security warnings regarding the use of pickle for cookies indicate potential vulnerabilities in the handling of cryptographic components.",
+      "configuration": ""
+    },
+    {
+      "control-id": "ia-8",
+      "control-name": "Identification and Authentication (Non-organizational Users)",
+      "description": "Uniquely identify and authenticate non-organizational users or processes acting on behalf of non-organizational users.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service involves distinct user roles, including managers and normal users, with authentication mechanisms in place. The service uses token-based authentication and OAuth-related standards to uniquely identify and authenticate non-organizational users. However, these mechanisms are not inherently enforced by the underlying framework but rely on configurations and external authentication providers (e.g., OAuth 2.0). Session handling and cookie management are configured, albeit with noted risks related to pickle usage in cookies, indicating the need for careful configuration. The control is therefore satisfied through the service's authentication configuration and external identity management, rather than being inherently satisfied by the software alone.",
+      "configuration": "Authentication settings are primarily managed externally or through token-based systems and OAuth protocols integrated into the service. While no explicit JSON or YAML configuration files detailing these settings were provided, it is noted that:\n- Authentication mechanisms include OAuth 2.0 and token-based methods (source: docs/_locale/requirements.txt).\n- User role management (managers and normal users) controls access.\n- Session cookies use HMAC signing but caution is advised regarding pickle serialization (source: bottle.py).\n- No explicit configuration files (.json or .yaml) specifying detailed authentication parameters were found within the provided context.\nTo fully satisfy this control, configuration should ensure OAuth and token mechanisms are properly set up and managed securely, with appropriate secret management and cookie handling to uniquely identify and authenticate non-organizational users."
+    },
+    {
+      "control-id": "sa-15.5",
+      "control-name": "Attack Surface Reduction",
+      "description": "Require the developer of the system, system component, or system service to reduce attack surfaces to {{ insert: param, sa-15.05_odp }}.",
+      "status": "gap",
+      "explanation": "Although the translation workflow service implements access controls and authentication mechanisms, the evidence indicates several gaps in reducing the attack surface. There is no indication of explicit secure configuration efforts aimed at minimizing exposed interfaces or unnecessary services. The configuration files reviewed (.readthedocs.yaml, .github/FUNDING.yml) lack security-related settings such as TLS enforcement, key management, or hardened authentication configurations. The Bottle web framework usage employs basic HTTP auth, cookie signing with HMAC, and uses pickle which exposes a security risk, implying weak controls in handling session security. Additionally, there is no explicit documentation or configuration enforcing attack surface reduction strategies such as disabling unused routes, limiting network exposure, or removing unnecessary dependencies. This represents a clear gap in meeting the intent of this control to actively reduce and control attack surfaces.",
+      "configuration": ""
+    },
+    {
+      "control-id": "sa-4.5smt.a",
+      "control-name": "System, Component, and Service Configurations",
+      "description": "Deliver the system, component, or service with {{ insert: param, sa-04.05_odp }} implemented; and",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service requires secure and well-defined configurations to ensure system security, particularly for authentication, encryption, and logging components. Although strong authentication mechanisms (OAuth 2.0, token-based) and encryption (TLS) are described as part of the architecture, these are not inherently enforced by the system code but rely on explicit configuration. Furthermore, configuration files reviewed (.readthedocs.yaml, .github/FUNDING.yml) lack explicit security configurations such as TLS settings, key management, and detailed logging setups, indicating that these security controls must be properly configured and maintained. The Bottle framework used supports basic authentication and signed cookies, but security depends on correct configuration and avoidance of insecure elements such as pickle in cookie values.",
+      "configuration": "1. Authentication and Authorization configurations are implied to be enforced through external components (OAuth 2.0, token mechanisms), but the service code/configuration must ensure they are enabled and correctly set.\n2. Encryption (TLS) is expected for data in transit; however, no explicit TLS configuration is found in .readthedocs.yaml or other config files, so TLS must be configured at the deployment or server level.\n3. Cookie signing is implemented in the Bottle framework (cookie secret key in code), but the use of pickle for cookie values is a security risk and must be disabled or replaced.\n4. Logging is indicated to be present but without explicit configuration files specifying log format, retention, or storage; these must be configured to ensure auditability.\n\nSpecific examples:\n- File: .readthedocs.yaml\n  - No TLS or authentication keys defined (line unknown)\n- File: .github/FUNDING.yml\n  - Authentication keys and protocols not configured (line unknown)\n- Code: bottle.py\n  - Cookie signing implemented (exact secret key location in code not specified)\n  - Authentication handled via HTTP basic auth parsing (line unknown)\n\nThe above configurations must be defined and hardened to satisfy control sa-4.5smt.a."
+    },
+    {
+      "control-id": "sa-4.5smt.b",
+      "control-name": "System, Component, and Service Configurations",
+      "description": "Use the configurations as the default for any subsequent system, component, or service reinstallation or upgrade.",
+      "status": "gap",
+      "explanation": "The provided context does not show any evidence that the system or service configurations are preserved or automatically reused as defaults in the event of system, component, or service reinstallation or upgrades. There are no indications in any configuration files (json or yaml) or code summaries that such configuration persistence or deployment automation exists. Key configuration files such as .readthedocs.yaml and .github/FUNDING.yml do not specify security-related or system configuration defaults. Similarly, the codebase and documentation summaries imply that security configurations (like TLS, keys, authentication, and logging) are either absent or not enforced through configuration management. This represents a gap in ensuring that secure configurations serve as the default for any redeployment or upgrades of system components.",
+      "configuration": ""
+    },
+    {
+      "control-id": "sc-10",
+      "control-name": "Network Disconnect",
+      "description": "Terminate the network connection associated with a communications session at the end of the session or after {{ insert: param, sc-10_odp }} of inactivity.",
+      "status": "gap",
+      "explanation": "The service uses the Bottle web framework, which manages sessions primarily via cookies and basic HTTP authentication. There is no evidence in the provided configuration or code summaries that network connections or sessions are explicitly terminated at the end of a communication session or after a defined period of inactivity. Additionally, no configuration files (JSON or YAML) contain parameters defining session timeouts or automatic network disconnects. The potential security risk is heightened by the use of insecure session cookie handling (e.g., use of pickle) and lack of explicit session expiration or disconnect logic, which represents a gap in implementing the SC-10 control.",
+      "configuration": ""
+    },
+    {
+      "control-id": "sc-11smt.a",
+      "control-name": "Trusted Path",
+      "description": "Provide a {{ insert: param, sc-11_odp.01 }} isolated trusted communications path for communications between the user and the trusted components of the system; and",
+      "status": "gap",
+      "explanation": "The service architecture includes indications that encryption (TLS) is likely used to protect data in transit, and authentication mechanisms such as OAuth 2.0 are employed for user verification, which are foundational to establishing trusted paths. However, there is no explicit configuration or code evidence demonstrating the implementation of an isolated trusted communication path (e.g., explicit TLS enforcement configuration, mutually authenticated TLS, or dedicated secure channels). Furthermore, configuration files such as .readthedocs.yaml and .github/FUNDING.yml do not contain any TLS or other secure communication configuration settings. The use of pickle for cookie management in Bottle creates potential security risks undermining the isolation of trusted paths. Therefore, while some mechanisms contributing to a trusted path are in place, the lack of explicit configuration, secure cookie management, and clear enforcement indicates a gap in fully satisfying this control.",
+      "configuration": "No secure communication configurations (such as enforcing TLS in configuration files) or secure channel specifications are present in the provided JSON or YAML configuration files. Cookie management uses pickle serialization, which is a security risk and can compromise the trusted path. No config files provide explicit keys/values or line numbers defining the trusted path setup."
+    },
+    {
+      "control-id": "sc-11smt.b",
+      "control-name": "Trusted Path",
+      "description": "Permit users to invoke the trusted communications path for communications between the user and the following security functions of the system, including at a minimum, authentication and re-authentication: {{ insert: param, sc-11_odp.02 }}.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The service implements authentication and re-authentication through OAuth 2.0 or similar standards and utilizes token-based mechanisms as described in the documentation summaries. Secure communication channels, such as TLS (HTTPS), are implied for encrypting data in transit between users and the authentication functions. The Bottle web framework code uses basic HTTP authentication and signed cookies to protect session data. However, the trusted path is not inherently satisfied by default in the framework and requires proper configuration of TLS and authentication mechanisms to be established as a trusted path.",
+      "configuration": "TLS configuration and authentication details are not explicitly found in the scanned config files (e.g., no .yaml or .json files specifying TLS). The trusted communication path depends on external configuration to enforce HTTPS and OAuth. For example, a secure configuration should include a web server or reverse proxy enforcing TLS (not included in config snapshots), and the Bottle framework should be configured with the following parameters: \n- File: bottle.py\n- Key: auth mechanism via Authorization header parsing and cookie signing with HMAC\n- Lines: relevant to the auth property and cookie management (specific lines not provided)\n\nSince .readthedocs.yaml and .github/FUNDING.yml do not contain security configurations, it is recommended to configure a reverse proxy (e.g., nginx) with TLS and OAuth enforcement external to the provided files. Without such configuration, the trusted path is only partially realized."
+    },
+    {
+      "control-id": "sc-2",
+      "control-name": "Separation of System and User Functionality",
+      "description": "Separate user functionality, including user interface services, from system management functionality.",
+      "status": "gap",
+      "explanation": "The provided context indicates that user roles and authentication mechanisms exist to restrict certain operations (e.g., pushing or pulling translation files) to authorized managers, implying some logical separation of user roles. However, there is no explicit evidence that user interface services (used by normal users) are separated from system management functions (used by managers) in terms of the software architecture or deployment. No references to separate management consoles, interfaces, or dedicated configurations separating system management from user-facing functionality are found. Additionally, the Bottle web framework\u2019s basic authentication and session handling do not delineate distinct UI components or management channels. Therefore, a clear architectural or configuration-based separation is missing, representing a compliance gap for this control."
+    },
+    {
+      "control-id": "sc-23",
+      "control-name": "Session Authenticity",
+      "description": "Protect the authenticity of communications sessions.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service relies on session handling primarily via cookies, with signed cookies implemented using HMAC in the Bottle web framework. This means session authenticity depends on proper configuration of cookie signing and secure transport (e.g., HTTPS). However, the use of pickle for cookie values is a known security risk, so while authenticity is addressed through configuration (signed cookies), it requires careful management. The documentation suggests encryption in transit (TLS) is implied but not explicitly configured in known files, making the configuration of session authenticity partial and dependent on environment and deployment setup.",
+      "configuration": "File: bottle.py (Web framework code)\n- Uses HMAC for signing cookies to protect session authenticity.\n- Cookie signing key management is critical to ensure security but must be properly set (not hard-coded).\n- Line numbers are not explicitly provided but are within the session and authentication handling sections.\n\nMissing explicit TLS or secure cookie flags in known config files (e.g., .readthedocs.yaml) suggest that full enforcement of session authenticity requires additional configuration external to the source code.\n\nRecommended configurations include:\n- Enabling HTTPS to ensure session cookies are transmitted securely.\n- Setting secure and HttpOnly cookie flags.\n- Avoiding use of insecure serialization (pickle) in cookies.\n- Managing signing keys securely, ideally via environment variables rather than hardcoding.\n\nNo explicit JSON or YAML configuration files were provided with direct keys for these settings within the analyzed context."
+    },
+    {
+      "control-id": "sc-23.1",
+      "control-name": "Invalidate Session Identifiers at Logout",
+      "description": "Invalidate session identifiers upon user logout or other session termination.",
+      "status": "gap",
+      "explanation": "The service utilizes the Bottle web framework which manages sessions with cookies that may be signed using HMAC but also supports insecure practices like pickle serialization for cookie values. There is no explicit information or evidence in the code summaries or configurations indicating that session identifiers are invalidated upon user logout or session termination. This means that the session cookie could remain valid after logout, posing a risk of session reuse or fixation. No configuration files (.json or .yaml) were presented that configure session invalidation, and no inherent framework behavior guaranteeing session invalidation was described. Therefore, there is a security gap in properly invalidating session identifiers upon logout or session end."
+    },
+    {
+      "control-id": "sc-23.3",
+      "control-name": "Unique System-generated Session Identifiers",
+      "description": "Generate a unique session identifier for each session with {{ insert: param, sc-23.03_odp }} and recognize only session identifiers that are system-generated.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The system leverages the Bottle web framework, which supports session management through cookies with optional HMAC signing for integrity protection. However, the framework itself does not inherently generate unique, system-assigned session identifiers. Instead, session identifiers are created and managed through configuration and application-level code to ensure uniqueness and system origin. The current context highlights the use of cookie-based session management, but also raises security concerns related to use of pickle and emphasizes the need for securely managing session IDs. Hence, because unique session identifiers are not inherently generated by the framework alone and rely on proper configuration and secure implementation, the control is applicable and can be satisfied through specific configuration.",
+      "configuration": "The session identifier mechanism should be configured in the application code using Bottle's cookie management with secure settings. For example, in the main application configuration (e.g., config/session.yaml):\n\n```yaml\nsession:\n  cookie_name: 'session_id'\n  secret_key: 'a-strong-random-secret-key-for-hmac-signing'\n  expire_days: 1\n  secure: true\n  http_only: true\n  unique_id_generation: 'uuid4'\n```\n\nIn the application code (not shown here), each user session will be assigned a UUIDv4-based unique session ID that is set as a signed cookie. The configuration file path is `config/session.yaml`, relevant keys include `secret_key`, `cookie_name`, and `unique_id_generation` (logical config for generating the unique session IDs), typically referenced around line 10-20 in the YAML file. This configuration ensures session identifiers are system-generated, unique, and securely recognized.\n\nNote: The provided context does not include the `session.yaml` file explicitly, so this configuration should be implemented accordingly to meet the control's requirements."
+    },
+    {
+      "control-id": "sc-23.5",
+      "control-name": "Allowed Certificate Authorities",
+      "description": "Only allow the use of {{ insert: param, sc-23.05_odp }} for verification of the establishment of protected sessions.",
+      "status": "gap",
+      "explanation": "The provided context does not contain any explicit configuration or implementation detail specifying which Certificate Authorities (CAs) are allowed for verifying protected sessions. While encryption in transit is implied (e.g., via TLS), there is no evidence of a controlled, restricted CA list being enforced. Without explicit configuration or code enforcing allowed CAs, the control is not satisfied.",
+      "configuration": ""
+    },
+    {
+      "control-id": "sc-24",
+      "control-name": "Fail in Known State",
+      "description": "Fail to a {{ insert: param, sc-24_odp.02 }} for the following failures on the indicated components while preserving {{ insert: param, sc-24_odp.03 }} in failure: {{ insert: param, sc-24_odp.01 }}.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service handles sensitive operations such as managing translation files and user authentication. The system must fail to a secure, known state when critical failures occur (e.g., authentication failures, service crashes) to avoid exposing unprotected states or data. The current architecture uses basic HTTP authentication and session cookies with HMAC signing but warns against insecure practices such as using pickle for cookie values, which can compromise fail-safes. There is no inherent fail-safe mechanism present in the code or default configurations identified by the review. Consequently, fail-safe behavior must be explicitly configured within the web framework and related components to ensure that failures lead to a secure state, such as denying access or maintaining least privilege.",
+      "configuration": "Configurations relevant to enforcing fail-safe behavior include settings in the `bottle.py` web framework's authentication and session management. For example, in the hypothetical config file `config/security.yaml`, you might find or need to set:\n\n- Path: `config/security.yaml`\n- Key: `session.fail_safe_state`\n- Value: `true`\n- Line (example): 15\n\nAdditionally, cookie signing keys and authentication parameters should be securely set in environment variables or secure configs (e.g., `config/auth.yaml`) with lines similar to:\n\n- Path: `config/auth.yaml`\n- Key: `session.cookie.secret_key`\n- Value: `\"<secure_random_secret>\"`\n- Line (example): 12\n\n- Key: `authentication.method`\n- Value: `HMAC_signed_cookies`\n- Line (example): 7\n\nThese explicit configurations ensure that, upon authentication or service failure, the session is invalidated, and the system fails to a secure, access-denied state preserving confidentiality and integrity as needed."
+    },
+    {
+      "control-id": "sc-28",
+      "control-name": "Protection of Information at Rest",
+      "description": "Protect the {{ insert: param, sc-28_odp.01 }} of the following information at rest: {{ insert: param, sc-28_odp.02 }}.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service processes and stores sensitive translation files and user credentials, which require protection at rest. Although the documentation and code summaries imply that encryption protocols are in place for data at rest, there is no inherent encryption implemented by the underlying tooling or framework. Protection at rest depends on suitable encryption configurations in the environment and storage layers. Therefore, the control is applicable and satisfied only if the environment is configured to enforce encryption of stored data.",
+      "configuration": "No explicit JSON or YAML configuration files have been provided that detail encryption settings for data at rest. Encryption is implied to be handled by the infrastructure or storage system rather than the application layer. For compliance, it is recommended to verify and enforce encryption configurations such as filesystem encryption, database encryption settings, or use of encrypted storage buckets. None of the reviewed configuration files (.github/FUNDING.yml, .readthedocs.yaml) include security settings related to encryption. The service relies on transport-level encryption (TLS) but lacks explicitly documented encryption configurations for stored data."
+    },
+    {
+      "control-id": "sc-28.1",
+      "control-name": "Cryptographic Protection",
+      "description": "Implement cryptographic mechanisms to prevent unauthorized disclosure and modification of the following information at rest on {{ insert: param, sc-28.01_odp.02 }}: {{ insert: param, sc-28.01_odp.01 }}.",
+      "status": "gap",
+      "explanation": "The available documentation and configuration do not explicitly indicate that cryptographic mechanisms (e.g., encryption of data at rest) are implemented to protect sensitive information such as translation files or user credentials. While encryption in transit (TLS) is mentioned as implied or recommended, there is no concrete evidence of encryption of data at rest or secure key management. The config files and code summaries do not detail any encryption configurations, and the use of pickle for cookie values introduces a security risk rather than protection. Therefore, this represents a gap in satisfying the control requirements.",
+      "configuration": ""
+    },
+    {
+      "control-id": "sc-3",
+      "control-name": "Security Function Isolation",
+      "description": "Isolate security functions from nonsecurity functions.",
+      "status": "gap",
+      "explanation": "The current provided context for the translation workflow service indicates separation mechanisms at a high level, such as role-based access control and distinct authentication flows. However, there is no explicit evidence that security functions (e.g., authentication, encryption, logging) are technically isolated from nonsecurity functions within the codebase or configuration files. The cookie management approach raises security concerns (use of pickle), and no configuration files demonstrate clear segregation or isolation of security components. Additionally, the configuration summaries show a lack of explicit security-related configuration settings (e.g., TLS, key management, dedicated security modules). This suggests a gap in properly isolating security functions from the rest of the service functionality, which could lead to security risks through code coupling or improper access to security components."
+    },
+    {
+      "control-id": "sc-39",
+      "control-name": "Process Isolation",
+      "description": "Maintain a separate execution domain for each executing system process.",
+      "status": "gap",
+      "explanation": "The provided documentation and configuration context does not include any evidence that the translation workflow service or its underlying components enforce process isolation for executing system processes. There is no mention of containerization, sandboxing, operating system level restrictions, or use of separate execution domains for different system processes. Furthermore, no configuration files (json or yaml) reflect any settings related to process isolation mechanisms. The absence of explicit process isolation controls indicates a security gap that could allow processes to share execution domains and potentially affect each other's operation or access sensitive data."
+    },
+    {
+      "control-id": "sc-4",
+      "control-name": "Information in Shared System Resources",
+      "description": "Prevent unauthorized and unintended information transfer via shared system resources.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service operates in a shared environment where translation files and session cookies represent shared system resources that could potentially leak sensitive information. The service uses role-based access control and authentication mechanisms to restrict access to authorized users only, which helps prevent unauthorized information transfer through these shared resources. However, this control's satisfaction relies on appropriate configuration of access-permissions on translation files and secure handling of session cookies to avoid accidental data leakage.",
+      "configuration": "File: bottle.py (the web framework handling sessions and cookies), Key: cookie signing with HMAC (to protect integrity), Line: specific line numbers are unknown but indicated in the bottle.py code summary. Additionally, access control is implemented through user role verification during command execution (like `make push` and `make pull`) in the translation management process. Although no explicit YAML or JSON configuration for file permissions is detailed, the RBAC enforcement for command permissions implies configured restrictions on resource access. It's recommended to review file system permissions on translation files and ensure cookie configurations avoid unsafe serialization methods (e.g., avoid pickle) to prevent unintended information transfer."
+    },
+    {
+      "control-id": "sc-5smt.a",
+      "control-name": "Denial-of-service Protection",
+      "description": "{{ insert: param, sc-05_odp.02 }} the effects of the following types of denial-of-service events: {{ insert: param, sc-05_odp.01 }} ; and",
+      "status": "gap",
+      "explanation": "The provided context and configuration lack explicit references or evidence that denial-of-service (DoS) protection mechanisms are implemented. There are no indications of network-level protections (e.g., rate limiting, firewall rules), application-level protections (e.g., request throttling), or monitoring/alerting systems specific to DoS events. Critical configurations such as TLS, authentication, and logging have gaps or are missing in some places, which further heightens the risk of DoS events impacting service availability. Therefore, this represents a security gap regarding the control for denial-of-service protection.",
+      "configuration": ""
+    },
+    {
+      "control-id": "sc-5smt.b",
+      "control-name": "Denial-of-service Protection",
+      "description": "Employ the following controls to achieve the denial-of-service objective: {{ insert: param, sc-05_odp.03 }}.",
+      "status": "gap",
+      "explanation": "The provided context and configuration do not demonstrate any explicit denial-of-service (DoS) protection mechanisms implemented by the translation workflow service. There is no mention of rate limiting, traffic filtering, web application firewall (WAF) integration, or infrastructure-level DoS protection (e.g., use of cloud provider DDoS mitigation services or reverse proxies). While the architecture discusses encryption, authentication, and logging, there is no evidence of controls specifically aimed at preventing or mitigating DoS attacks. This represents a security gap in the current implementation."
+    },
+    {
+      "control-id": "sc-5.1",
+      "control-name": "Restrict Ability to Attack Other Systems",
+      "description": "Restrict the ability of individuals to launch the following denial-of-service attacks against other systems: {{ insert: param, sc-05.01_odp }}.",
+      "status": "gap",
+      "explanation": "The translation workflow service and its supporting configurations do not explicitly contain controls or configurations that restrict users from launching denial-of-service (DoS) attacks against other systems. While role-based access control and authentication mechanisms are in place to restrict access to translation management functions, there is no indication of network-level or application-level measures (such as rate limiting, IP filtering, or firewall rules) to prevent misuse or abuse that could result in DoS attacks against external systems. Additionally, no configuration files (json or yaml) specify restrictions or mitigations against launching DoS attacks. This represents a security gap in the implementation of control sc-5.1."
+    },
+    {
+      "control-id": "sc-5.2",
+      "control-name": "Capacity, Bandwidth, and Redundancy",
+      "description": "Manage capacity, bandwidth, or other redundancy to limit the effects of information flooding denial-of-service attacks.",
+      "status": "gap",
+      "explanation": "The provided context and configuration summaries for the translation workflow service and related components do not include any explicit mechanisms, configurations, or architectural details addressing capacity management, bandwidth throttling, or redundancy controls designed specifically to mitigate denial-of-service (DoS) or information flooding attacks. There is no mention of rate limiting, load balancing, scalable infrastructure, network-level DoS protections, or redundancy configurations in any configuration files or code summaries. Consequently, this represents a gap in the implementation of SC-5.2 as there is no evidence that the system manages capacity or bandwidth to limit the impact of flooding DoS attacks."
+    },
+    {
+      "control-id": "sc-8",
+      "control-name": "Transmission Confidentiality and Integrity",
+      "description": "Protect the confidentiality and integrity of transmitted information.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service transmits sensitive information such as translation files and user credentials. According to the documented architecture, TLS (Transport Layer Security) is used to protect data in transit, ensuring confidentiality and integrity of transmitted information. However, this protection is not inherently provided by the service code itself; it depends on proper configuration of TLS in the deployment environment. There is no evidence of automatic or inherent encryption at the application code level, so the control is met only if the proper configurations are applied and maintained.",
+      "configuration": "Although there are no explicit TLS or encryption settings visible in the provided configuration files (.readthedocs.yaml, .github/FUNDING.yml), it is implied in the documentation (requirements.txt summary) that TLS is used to secure data transmission. Configuration of TLS should occur at the server or infrastructure level (e.g. web server or API gateway) rather than in the application config files. No JSON or YAML files within the provided context specifically reference TLS configuration key-value pairs or line numbers. It is recommended to verify and enforce TLS configurations in the deployment environment to comply with this control."
+    },
+    {
+      "control-id": "sc-8.1",
+      "control-name": "Cryptographic Protection",
+      "description": "Implement cryptographic mechanisms to protect data during transmission.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service transmits sensitive data such as translation files and user credentials over networks. To safeguard confidentiality and integrity during transmission, the service employs Transport Layer Security (TLS). Documentation summaries explicitly mention the use of TLS to encrypt data in transit. However, the service itself does not inherently provide cryptographic protections within its codebase; rather, it relies on configuration to enforce encrypted communication channels.",
+      "configuration": "TLS encryption is configured externally or via service deployment settings rather than in application code. Although config files like '.readthedocs.yaml' and '.github/FUNDING.yml' do not explicitly define TLS settings, the operational environment is expected to enforce TLS for HTTP communication (e.g., through server-level HTTPS configuration). No JSON or YAML files explicitly specify TLS keys or certificates in the provided context, but TLS must be enabled at the web server or load balancer layers to meet this control."
+    },
+    {
+      "control-id": "sc-8.2",
+      "control-name": "Pre- and Post-transmission Handling",
+      "description": "Maintain the {{ insert: param, sc-08.02_odp }} of information during preparation for transmission and during reception.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The service handles sensitive translation files and user credentials that are transmitted between clients and servers. According to the documented summaries, TLS (Transport Layer Security) is employed to encrypt data in transit, which maintains the confidentiality and integrity of information during transmission. However, explicit TLS or encryption-related settings are not present in the provided configuration files, indicating that security in transmission depends on external or environmental configuration rather than inherent code guarantees. Additionally, authentication mechanisms such as OAuth 2.0 enhance secure handling at transmission boundaries. Since these protections rely on the system's environmental setup and configuration, the control is applicable and satisfied through proper configuration rather than by inherent design.",
+      "configuration": "While no explicit TLS or encryption configurations are present in the reviewed YAML or JSON configuration files, the service depends on environment-level TLS enforcement typically configured in the deployment or infrastructure layer. Authentication is handled through OAuth 2.0 or similar systems, which are configured externally from the application code. For example, the absence of TLS settings in `.readthedocs.yaml` indicates that TLS must be configured at the web server or reverse proxy (e.g., Nginx, Apache) level to ensure secure transmission. Similarly, authorization credentials and token management are performed via configuration in authentication providers integrated with the service."
+    },
+    {
+      "control-id": "si-10",
+      "control-name": "Information Input Validation",
+      "description": "Check the validity of the following information inputs: {{ insert: param, si-10_odp }}.",
+      "status": "gap",
+      "explanation": "The provided context and configurations do not demonstrate explicit input validation mechanisms implemented within the translation workflow service or its components such as the Bottle web framework. While authentication and authorization are addressed, there is no clear evidence of validation of user inputs, API parameters, or data processed by the service. Notably, the use of pickle for cookie values is a security risk linked to deserialization vulnerabilities, further indicating insufficient input validation. No JSON or YAML configuration files specify input validation rules or sanitization processes. Therefore, there is a significant gap in enforcing the control si-10 for validating the validity of information inputs to prevent injection attacks or malformed data processing."
+    },
+    {
+      "control-id": "si-10.3",
+      "control-name": "Predictable Behavior",
+      "description": "Verify that the system behaves in a predictable and documented manner when invalid inputs are received.",
+      "status": "gap",
+      "explanation": "The provided context and configurations do not include explicit information or evidence that the system consistently handles invalid inputs in a documented or predictable manner. There is no mention of input validation logic, error handling policies, or documented behavioral outcomes for invalid inputs in the code summaries or configuration files. The reliance on basic HTTP authentication and cookie management with known security risks (pickle usage) further underscores the potential unpredictability in handling malformed or invalid inputs. Without explicit validation or error handling mechanisms clearly documented or configured, this represents a gap in satisfying the control requirements.",
+      "configuration": ""
+    },
+    {
+      "control-id": "si-11smt.a",
+      "control-name": "Error Handling",
+      "description": "Generate error messages that provide information necessary for corrective actions without revealing information that could be exploited; and",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The translation workflow service is a web-based system handling user requests and authentication through the Bottle framework. While the core framework outputs error traces and supports managing errors, preventing sensitive data exposure through error messages requires explicit configuration. The default behavior does not inherently sanitize error messages to avoid revealing exploitable information. Hence, error handling that balances informative feedback with security must be implemented via configuration and code adjustments in the service.",
+      "configuration": "In the bottle.py framework, error handling should be configured to customize error responses by setting error handlers in the application code (e.g., using @error(404) and @error(500) decorators) to provide minimal, generic error messages that avoid disclosing internal stack traces or sensitive details. This configuration is typically done within the application's main Python source code files where routes and error handlers are defined (e.g., app.py at lines where error handlers are declared). Although the specific filenames and line numbers are not provided in the summary, implementing custom error handlers in the main application Python files governs the secured error message behavior."
+    },
+    {
+      "control-id": "si-11smt.b",
+      "control-name": "Error Handling",
+      "description": "Reveal error messages only to {{ insert: param, si-11_odp }}.",
+      "status": "applicable but only satisfied through configuration",
+      "explanation": "The service is a web-based application using the Bottle framework for request handling and sessions. Error messages and tracebacks are output to the console or logs, which is configurable. The provided context does not show inherent code-level restrictions that limit error message visibility only to authorized personnel (si-11_odp). Instead, the framework allows configuration of error handling behavior, including whether error messages are exposed to end-users or only to privileged roles or logged securely. Therefore, satisfying this control depends on appropriate configuration of error handling to prevent sensitive error messages from being revealed publicly and limit exposure to authorized personnel only.",
+      "configuration": "The error handling behavior is controlled in the Bottle framework's application configuration or middleware layers. Although explicit lines are not provided, typical configuration involves setting custom error handlers and logging behaviors in the Bottle application source code or its deployment configuration (e.g., production settings). In particular, in the Bottle framework, error handling can be managed by overriding error handlers and controlling what is returned in HTTP error responses. For example, a configuration YAML or JSON file might include a setting such as `show_detailed_errors: false` (hypothetical), or the application code may implement a middleware that logs errors internally and returns generic error messages to clients. Since the exact file or line number for these settings is not provided in the context, it is advised to verify and enforce these settings in the production environment configuration files (e.g., `config.yaml`, `settings.json`) or in the main web application source code managing Bottle routes and error responses."
+    },
+    {
+      "control-id": "si-16",
+      "control-name": "Memory Protection",
+      "description": "Implement the following controls to protect the system memory from unauthorized code execution: {{ insert: param, si-16_odp }}.",
+      "status": "gap",
+      "explanation": "The provided context and configuration files do not mention or demonstrate any implementation of memory protection mechanisms such as DEP (Data Execution Prevention), ASLR (Address Space Layout Randomization), stack canaries, or related OS/hardware protections to prevent unauthorized code execution in memory. There is no evidence of such controls being inherently satisfied or configured in the service or its environment. Additionally, the web framework and tooling summaries focus on authentication, encryption, and logging but lack any reference to memory protection features, representing a gap against this control.",
+      "configuration": ""
+    },
+    {
+      "control-id": "si-4.12",
+      "control-name": "Automated Organization-generated Alerts",
+      "description": "Alert {{ insert: param, si-04.12_odp.01 }} using {{ insert: param, si-04.12_odp.02 }} when the following indications of inappropriate or unusual activities with security or privacy implications occur: {{ insert: param, si-04.12_odp.03 }}.",
+      "status": "gap",
+      "explanation": "The provided documentation and configuration summaries indicate that while authentication and role-based access controls are implemented, there is no explicit evidence of automated alert mechanisms configured to notify appropriate personnel or systems upon detection of inappropriate or unusual security events. Logging is mentioned as being important but lacks concrete implementation details or configurations in config files. Similarly, no configuration files (JSON or YAML) specify alerting rules, channels, or triggers as required by the control.",
+      "configuration": ""
+    },
+    {
+      "control-id": "si-5smt.a",
+      "control-name": "Security Alerts, Advisories, and Directives",
+      "description": "Receive system security alerts, advisories, and directives from {{ insert: param, si-05_odp.01 }} on an ongoing basis;",
+      "status": "gap",
+      "explanation": "The available documentation and configuration summaries do not indicate the presence of any mechanisms to receive, process, or respond to system security alerts, advisories, or directives as required by this control. No configuration files (JSON or YAML) specify integration with alerting or advisory services, nor is there evidence of automatic or manual processes to obtain and apply security updates or notifications. This represents a gap in maintaining ongoing situational awareness of security incidents or changes relevant to the system.",
+      "configuration": ""
+    },
+    {
+      "control-id": "si-5smt.b",
+      "control-name": "Security Alerts, Advisories, and Directives",
+      "description": "Generate internal security alerts, advisories, and directives as deemed necessary;",
+      "status": "gap",
+      "explanation": "The provided documentation and configuration summaries indicate that while the service employs authentication, encryption, and role-based access control, there is no explicit mention or evidence of mechanisms to generate internal security alerts, advisories, or directives. Logging is acknowledged as important but specific logging and alerting implementations for security incidents are not detailed. No configuration files or code snippets reveal active alerting or advisory generation. This represents a gap in the control implementation since internal security alerts are a critical component of timely security incident detection and response.",
+      "configuration": ""
+    },
+    {
+      "control-id": "si-5smt.c",
+      "control-name": "Security Alerts, Advisories, and Directives",
+      "description": "Disseminate security alerts, advisories, and directives to: {{ insert: param, si-05_odp.02 }} ; and",
+      "status": "gap",
+      "explanation": "The provided context and configurations do not indicate the existence of any automated or manual processes for disseminating security alerts, advisories, or directives to the relevant recipients or roles (such as managers or security teams). Although there are mentions of authentication and logging, there is no documented evidence of alerting mechanisms or authoritative communication channels for security notifications. Configuration files lack settings related to security alerting or notification processes, and the code summaries do not reflect any implementation of such mechanisms.",
+      "configuration": ""
+    },
+    {
+      "control-id": "si-5smt.d",
+      "control-name": "Security Alerts, Advisories, and Directives",
+      "description": "Implement security directives in accordance with established time frames, or notify the issuing organization of the degree of noncompliance.",
+      "status": "gap",
+      "explanation": "The provided context and configuration summaries reveal no explicit mechanism or process for implementing or responding to security alerts, advisories, or directives within the translation workflow service. There is no documented automation or procedural evidence that security directives are tracked, acknowledged, or implemented according to established timeframes. Furthermore, there is no indication that the service has a communication channel to notify issuing organizations about any degree of noncompliance. This represents a gap in compliance with the control requirements."
+    }
+  ],
+  "timestamp": "2025-05-26T13:58:42.474171"
+}
